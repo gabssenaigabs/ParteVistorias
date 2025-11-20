@@ -1,0 +1,111 @@
+@using CondoHub.Models.ViewModels
+@model RegisterMoradorViewModel
+@{
+    ViewData["Title"] = "Cadastro Morador";
+}
+
+<div class="auth-page d-flex align-items-center justify-content-center min-vh-100">
+    <div class="auth-container text-center">
+        <div class="mb-8">
+            <div class="logo-wrap d-inline-flex mb-4">
+                <div class="logo-icon bg-blue-100 rounded-xl d-flex align-items-center justify-content-center">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        class="icon-inner text-blue" aria-hidden="true">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+            </div>
+            <h1 class="app-title">Cadastro de Morador</h1>
+            <p class="app-subtitle">Preencha seus dados para criar sua conta</p>
+        </div>
+
+        <div class="auth-card mx-auto">
+
+            <form asp-action="RegisterMorador" method="post" class="space-y-4">
+                <div class="space-y-2">
+                    <label asp-for="Nome" class="form-label">Nome Completo *</label>
+                    <div class="input-group no-icon">
+                        <input asp-for="Nome" class="form-control form-control-lg"
+                            placeholder="Digite seu nome completo" />
+                    </div>
+                    <span asp-validation-for="Nome" class="text-danger"></span>
+                </div>
+
+                <div class="space-y-2">
+                    <label asp-for="Email" class="form-label">E-mail *</label>
+                    <div class="input-group no-icon">
+                        <input asp-for="Email" class="form-control form-control-lg" placeholder="Digite seu e-mail" />
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="grid gap-4 grid-cols-2">
+                    <div class="space-y-2">
+                        <label asp-for="CPF" class="form-label">CPF *</label>
+                        <div class="input-group no-icon">
+                            <input asp-for="CPF" class="form-control form-control-lg" placeholder="000.000.000-00" />
+                        </div>
+                        <span asp-validation-for="CPF" class="text-danger"></span>
+                    </div>
+                    <div class="space-y-2">
+                        <label asp-for="Telefone" class="form-label">Telefone *</label>
+                        <div class="input-group no-icon">
+                            <input asp-for="Telefone" class="form-control form-control-lg"
+                                placeholder="(00) 00000-0000" />
+                        </div>
+                        <span asp-validation-for="Telefone" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="grid gap-4 grid-cols-2">
+                    <div class="space-y-2">
+                        <label asp-for="Bloco" class="form-label">Bloco *</label>
+                        <div class="input-group no-icon">
+                            <input asp-for="Bloco" class="form-control form-control-lg" placeholder="A, B, C..." />
+                        </div>
+                        <span asp-validation-for="Bloco" class="text-danger"></span>
+                    </div>
+                    <div class="space-y-2">
+                        <label asp-for="Apartamento" class="form-label">Apartamento</label>
+                        <div class="input-group no-icon">
+                            <input asp-for="Apartamento" class="form-control form-control-lg"
+                                placeholder="101, 102, 103..." />
+                        </div>
+                        <span asp-validation-for="Apartamento" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label asp-for="Senha" class="form-label">Senha *</label>
+                    <div class="input-group no-icon">
+                        <input asp-for="Senha" type="password" class="form-control form-control-lg"
+                            placeholder="Mínimo 6 caracteres" />
+                    </div>
+                    <span asp-validation-for="Senha" class="text-danger"></span>
+                </div>
+
+                <div class="space-y-2">
+                    <label asp-for="ConfirmarSenha" class="form-label">Confirmar Senha *</label>
+                    <div class="input-group no-icon">
+                        <input asp-for="ConfirmarSenha" type="password" class="form-control form-control-lg"
+                            placeholder="Digite a senha novamente" />
+                    </div>
+                </div>
+
+                <div class="space-y-3 pt-4">
+                    <button type="submit" class="btn btn-blue btn-lg w-100">Criar Conta</button>
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-outline-secondary w-100">Voltar</a>
+                </div>
+            </form>
+
+            <div class="mt-4 text-center">
+                <span class="small text-gray-600">Já tem uma conta? </span>
+                <a asp-controller="Account" asp-action="Login" class="small link-primary text-decoration-none">Fazer
+                    login</a>
+            </div>
+        </div>
+
+        <div class="mt-4 text-gray-500 small">© 2025 CondoHub. Todos os direitos reservados.</div>
+    </div>
+</div>

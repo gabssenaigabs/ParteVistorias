@@ -1,0 +1,203 @@
+@model IEnumerable<CondoHub.Models.Entities.Property>
+@{
+    ViewData["Title"] = "Gestão de Imóveis";
+}
+
+@if (User?.Identity != null && User.Identity.IsAuthenticated)
+{
+    <partial name="_Sidebar" />
+}
+
+<link rel="stylesheet" href="~/css/imoveis.css" />
+
+<div class="main-content">
+    <div class="container-fluid py-4">
+
+        <div class="imoveis-header text-center">
+            <div class="mb-3">
+                <h1 class="app-title">Gestão de Imóveis</h1>
+                <p class="app-subtitle mb-0">Cadastro e controle de unidades</p>
+            </div>
+        </div>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert" style="max-width: 920px; margin: 20px auto;">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert" style="max-width: 920px; margin: 20px auto;">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (User != null && User.IsInRole("MORADOR"))
+        {
+            <div class="d-flex justify-content-center mb-3">
+                <div style="max-width:920px; width:100%; display:flex; justify-content:center;">
+                    <div style="width:520px; max-width:90%; margin-left:-24px;">
+                        <input id="searchInput" type="text" class="form-control ps-3 search-input"
+                            placeholder="Buscar por unidade ou proprietário..." style="width:100%;">
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="d-flex flex-column gap-3 align-items-center mb-3" style="justify-content: center;">
+                <div class="d-flex gap-3 align-items-center" style="width: fit-content;">
+                    <input id="searchInput" type="text" class="form-control ps-3 search-input"
+                        placeholder="Buscar por unidade ou proprietário..." style="width: 400px;">
+
+                    @if (User != null && (User.IsInRole("GESTOR") || User.IsInRole("SINDICO")))
+                    {
+                        <a href="@Url.Action("Create", "Properties")" class="btn btn-primary d-inline-flex align-items-center"
+                            style="flex: 0 0 auto; white-space: nowrap;">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                aria-hidden="true" class="me-2">
+                                <path d="M8 1v14M1 8h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                            </svg>
+                            Novo Imóvel
+                        </a>
+                    }
+                    else
+                    {
+                        <button class="btn btn-primary d-inline-flex align-items-center" disabled
+                            style="flex: 0 0 auto; white-space: nowrap; opacity: 0.65;">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                aria-hidden="true" class="me-2">
+                                <path d="M8 1v14M1 8h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                            </svg>
+                            Novo Imóvel
+                        </button>
+                    }
+                </div>
+            </div>
+        }
+
+        @* *@
+
+        @if (Model == null || !Model.Any())
+        {
+            <p class="text-muted text-center py-5">Nenhum imóvel cadastrado</p>
+        }
+
+        <div class="row g-3">
+            @foreach (var property in Model ?? Enumerable.Empty<CondoHub.Models.Entities.Property>())
+            {
+                <div class="col-12">
+                    <div class="card" style="border: none; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                        <div class="card-body p-4">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="display:flex; align-items:center; gap:16px; flex:1; padding-left:0;">
+                                    <div
+                                        style="width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; background:#FAF7FF; flex-shrink:0; color:#0d6efd;">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                            <rect x="3" y="4" width="18" height="18" rx="2" stroke="#0d6efd"
+                                                stroke-width="2" />
+                                            <rect x="7" y="7" width="3" height="3" fill="#0d6efd" />
+                                            <rect x="14" y="7" width="3" height="3" fill="#0d6efd" />
+                                            <rect x="7" y="12" width="3" height="3" fill="#0d6efd" />
+                                            <rect x="14" y="12" width="3" height="3" fill="#0d6efd" />
+                                            <rect x="10" y="18" width="4" height="4" fill="#0d6efd" />
+                                        </svg>
+                                    </div>
+                                    <div style="flex:1;">
+                                        <h6 class="mb-1"
+                                            style="font-weight: 600; color: #1a1a1a; margin: 0; padding: 0; text-align: left;">
+                                            Bloco @property.Bloco - @property.Numero</h6>
+                                        <div
+                                            style="text-align: left; font-size: 13px; color: #666; line-height: 1.4; margin-left: 0;">
+                                            <p
+                                                style="margin:0; padding:0; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                                                @* *@
+                                                @{
+                                                    var owners = ViewBag.PropertyOwners as Dictionary<int, string>;
+                                                    var ownerName = owners != null && owners.ContainsKey(property.Id) ?
+                                                    owners[property.Id] : "—";
+                                                }
+                                                <span>Proprietário: <strong>@ownerName</strong></span>
+                                                <span class="ms-2">•</span>
+                                                <span>Área: <strong>@property.Area m²</strong></span>
+                                                <span class="ms-2">•</span>
+                                                <span>Status: <strong>@property.Type</strong></span>
+                                                @{
+                                                    var contractTypes = ViewBag.PropertyContractTypes as
+                                                    System.Collections.Generic.Dictionary<int, string>;
+                                                    var contractLabel = contractTypes != null &&
+                                                    contractTypes.ContainsKey(property.Id) ? contractTypes[property.Id] : "—";
+                                                }
+                                                <span class="ms-2">•</span>
+                                                <span>Tipo: <strong>@contractLabel</strong></span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="flex-shrink: 0; margin-left: 16px; display:flex; gap:8px; align-items:center;">
+                                    @* *@
+                                    @if (User == null || !User.IsInRole("MORADOR"))
+                                    {
+                                        <a href="@Url.Action("Edit", new { id = property.Id })"
+                                            class="btn btn-sm btn-outline-secondary"
+                                            style="border-radius: 8px; font-size: 13px; white-space: nowrap;">
+                                            Editar
+                                        </a>
+                                        @if (User != null && (User.IsInRole("GESTOR") || User.IsInRole("SINDICO")))
+                                        {
+                                            <form asp-action="Delete" asp-controller="Properties" method="post"
+                                                style="display:inline; margin:0;">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@property.Id" />
+                                                <button type="submit" class="btn btn-sm btn-outline-secondary"
+                                                    style="border-radius: 8px; font-size: 13px; white-space: nowrap;"
+                                                    onclick="return confirm('Deseja excluir este imóvel?');">
+                                                    Excluir
+                                                </button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-sm btn-outline-secondary" disabled
+                                                style="border-radius: 8px; font-size: 13px; white-space: nowrap;"
+                                                title="Somente gestor pode excluir">Excluir</button>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        @* *@
+
+
+        @* *@
+
+        <style>
+            .hover-shadow {
+                transition: all 0.3s;
+            }
+
+            .hover-shadow:hover {
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+                transform: translateY(-2px);
+            }
+
+            .btn-close:focus, .btn-close:active {
+                outline: none !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
+        </style>
+
+    </div>
+</div>
+
+@* *@

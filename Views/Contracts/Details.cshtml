@@ -1,0 +1,209 @@
+@using CondoHub.Models.Entities
+@model Contract
+@{
+    ViewData["Title"] = "Detalhes do Contrato";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="mb-4 d-flex justify-content-between align-items-center">
+                <div>
+                    <h3 class="mb-1">Detalhes do Contrato</h3>
+                    <p class="text-muted mb-0">Informações completas do contrato</p>
+                </div>
+                <div>
+                    <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-primary">
+                        <i class="bi bi-pencil me-2"></i>
+                        Editar
+                    </a>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h5 class="mb-3">Informações Básicas</h5>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <p class="text-muted small mb-1">Nome</p>
+                            <h6 class="mb-3">@Model.Nome</h6>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-muted small mb-1">Tipo de Contrato</p>
+                            <h6 class="mb-3">
+                                <span
+                                    class="badge @(Model.Type == ContractType.LocatarioProprietario ? "bg-info" : 
+                                                                                                                                                                                                                                             Model.Type == ContractType.Condomino ? "bg-warning" : 
+                                                                                                                                                                                                                                             "bg-success")">
+                                    @(Model.Type == ContractType.LocatarioProprietario ? "Locatário/Proprietário" :
+                                                                        Model.Type == ContractType.Condomino ? "Condômino" : "Funcionário")
+                                </span>
+                            </h6>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <p class="text-muted small mb-1">Imóvel</p>
+                            <h6 class="mb-3">
+                                @(Model.Property != null ?
+                                    (string.IsNullOrEmpty(Model.Property.Bloco) ? Model.Property.Numero : Model.Property.Bloco + " - " + Model.Property.Numero)
+                                    : "-")
+                            </h6>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-muted small mb-1">Unidade</p>
+                            <h6 class="mb-3">@(Model.Unidade ?? "-")</h6>
+                        </div>
+                    </div>
+
+                    <hr class="my-4" />
+                    <h5 class="mb-3">Informações de Contato</h5>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <p class="text-muted small mb-1">Telefone</p>
+                            <h6 class="mb-3">@(Model.Telefone ?? "-")</h6>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-muted small mb-1">Email</p>
+                            <h6 class="mb-3">
+                                @if (!string.IsNullOrEmpty(Model.Email))
+                                {
+                                    <a href="mailto:@Model.Email">@Model.Email</a>
+                                }
+                                else
+                                {
+                                    <text>-</text>
+                                }
+                            </h6>
+                        </div>
+                    </div>
+
+                    @if (Model.Type == ContractType.LocatarioProprietario)
+                    {
+                        <hr class="my-4" />
+                        <h5 class="mb-3">Dados do Contrato</h5>
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <p class="text-muted small mb-1">CPF</p>
+                                <h6 class="mb-3">@(Model.CPF ?? "-")</h6>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted small mb-1">Valor Mensal</p>
+                                <h6 class="mb-3 text-success">
+                                    @if (Model.ValorMensal.HasValue)
+                                    {
+                                        <text>R$ @Model.ValorMensal.Value.ToString("N2")</text>
+                                    }
+                                    else
+                                    {
+                                        <text>-</text>
+                                    }
+                                </h6>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="text-muted small mb-1">Data de Início</p>
+                                <h6 class="mb-3">
+                                    @if (Model.DataInicio.HasValue)
+                                    {
+                                        <text>@Model.DataInicio.Value.ToString("dd/MM/yyyy")</text>
+                                    }
+                                    else
+                                    {
+                                        <text>-</text>
+                                    }
+                                </h6>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted small mb-1">Data de Término</p>
+                                <h6 class="mb-3">
+                                    @if (Model.DataFim.HasValue)
+                                    {
+                                        <text>@Model.DataFim.Value.ToString("dd/MM/yyyy")</text>
+                                    }
+                                    else
+                                    {
+                                        <text>-</text>
+                                    }
+                                </h6>
+                            </div>
+                        </div>
+                    }
+
+                    @if (Model.Type == ContractType.Condomino)
+                    {
+                        <hr class="my-4" />
+                        <h5 class="mb-3">Dados do Condômino</h5>
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <p class="text-muted small mb-1">CPF</p>
+                                <h6 class="mb-3">@(Model.CPF ?? "-")</h6>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted small mb-1">Tipo de Condômino</p>
+                                <h6 class="mb-3">@(Model.TipoCondomino ?? "-")</h6>
+                            </div>
+                        </div>
+                    }
+
+                    @if (Model.Type == ContractType.Funcionario)
+                    {
+                        <hr class="my-4" />
+                        <h5 class="mb-3">Dados do Funcionário</h5>
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <p class="text-muted small mb-1">CPF</p>
+                                <h6 class="mb-3">@(Model.CPF ?? "-")</h6>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted small mb-1">Cargo</p>
+                                <h6 class="mb-3">@(Model.Cargo ?? "-")</h6>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <p class="text-muted small mb-1">Turno</p>
+                                <h6 class="mb-3">@(Model.Turno ?? "-")</h6>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted small mb-1">Data de Admissão</p>
+                                <h6 class="mb-3">
+                                    @if (Model.DataAdmissao.HasValue)
+                                    {
+                                        <text>@Model.DataAdmissao.Value.ToString("dd/MM/yyyy")</text>
+                                    }
+                                    else
+                                    {
+                                        <text>-</text>
+                                    }
+                                </h6>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="d-flex gap-2 mt-4 pt-4 border-top">
+                        <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-primary">
+                            <i class="bi bi-pencil me-2"></i>
+                            Editar
+                        </a>
+                        <a href="@Url.Action("Index")" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>
+                            Voltar
+                        </a>
+                        <form asp-action="Delete" asp-route-id="@Model.Id" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-danger"
+                                onclick="return confirm('Tem certeza que deseja deletar este contrato?');">
+                                <i class="bi bi-trash me-2"></i>
+                                Deletar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

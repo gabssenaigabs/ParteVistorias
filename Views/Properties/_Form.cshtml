@@ -1,0 +1,60 @@
+@model CondoHub.Models.Entities.Property
+<form asp-action="Create" asp-controller="Properties" method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="All" class="alert alert-danger"></div>
+
+    <div class="row g-3">
+        <div class="col-md-4">
+            <label for="Bloco" class="form-label">Bloco</label>
+            <input name="Bloco" id="Bloco" class="form-control" placeholder="Ex: Bloco A" value="@Model?.Bloco" />
+            <span data-valmsg-for="Bloco" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-4">
+            <label for="Numero" class="form-label">Número da Unidade</label>
+            <input name="Numero" id="Numero" class="form-control" placeholder="Ex: 101" value="@Model?.Numero" />
+            <span data-valmsg-for="Numero" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-4">
+            <label for="Type" class="form-label">Tipo</label>
+            <select name="Type" id="Type" class="form-control">
+                <option value="">Selecione...</option>
+                @{
+                    foreach (var t in Enum.GetValues(typeof(CondoHub.Models.Entities.PropertyType)))
+                    {
+                        var val = t.ToString();
+                        var isSel = Model != null && Model.Type.ToString() == val;
+                        var optionHtml = $"<option value='{val}'{(isSel ? " selected='selected'" : "")}>{val}</option>";
+                        @Html.Raw(optionHtml)
+                        ;
+                    }
+                }
+            </select>
+            <span data-valmsg-for="Type" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label for="Area" class="form-label">Área (m²)</label>
+            <input name="Area" id="Area" type="number" step="0.01" class="form-control"
+                value="@(Model?.Area.ToString())" />
+            <span data-valmsg-for="Area" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label for="ProprietarioId" class="form-label">Proprietário (ID)</label>
+            <input name="ProprietarioId" id="ProprietarioId" class="form-control" placeholder="ID do usuário (opcional)"
+                value="@Model?.ProprietarioId" />
+            <span data-valmsg-for="ProprietarioId" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="contract-action-buttons mt-4 w-100">
+        <a href="@Url.Action("Index", "Properties")" class="contract-btn contract-btn-cancel">
+            Cancelar
+        </a>
+        <button type="submit" class="contract-btn contract-btn-submit">
+            Cadastrar
+        </button>
+    </div>
+</form>

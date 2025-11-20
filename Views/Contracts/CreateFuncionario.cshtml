@@ -1,0 +1,112 @@
+@using CondoHub.Models.Entities
+@model Contract
+@{
+    ViewData["Title"] = "Novo Funcionário";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="mb-4">
+                <h3 class="app-title">Novo Funcionário</h3>
+                <p class="app-subtitle mb-0">Preencha os dados para cadastrar um novo funcionário</p>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <form asp-action="CreateFuncionario" method="post">
+                        <div class="form-group mb-3">
+                            <label class="form-label fw-500">Nome Completo</label>
+                            <input asp-for="Nome" type="text" class="form-control" placeholder="Nome completo"
+                                required />
+                            <span asp-validation-for="Nome" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label fw-500">CPF</label>
+                                    <input asp-for="CPF" type="text" class="form-control"
+                                        placeholder="000.000.000-00" />
+                                    <span asp-validation-for="CPF" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label fw-500">Cargo</label>
+                                    <select asp-for="Cargo" class="form-control" required>
+                                        <option value="">Selecione...</option>
+                                        <option value="Zelador">Zelador</option>
+                                        <option value="Porteiro">Porteiro</option>
+                                        <option value="Administrativo">Administrativo</option>
+                                        <option value="Serviços Gerais">Serviços Gerais</option>
+                                        <option value="Outros">Outros</option>
+                                    </select>
+                                    <span asp-validation-for="Cargo" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label fw-500">Turno</label>
+                                    <select asp-for="Turno" class="form-control" required>
+                                        <option value="">Selecione...</option>
+                                        <option value="Manhã">Manhã</option>
+                                        <option value="Tarde">Tarde</option>
+                                        <option value="Noite">Noite</option>
+                                        <option value="Integral">Integral</option>
+                                    </select>
+                                    <span asp-validation-for="Turno" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label fw-500">Data de Admissão</label>
+                                    <input asp-for="DataAdmissao" type="date" class="form-control" />
+                                    <span asp-validation-for="DataAdmissao" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label fw-500">Telefone</label>
+                                    <input asp-for="Telefone" type="text" class="form-control"
+                                        placeholder="(00) 0000-0000" />
+                                    <span asp-validation-for="Telefone" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label fw-500">Email</label>
+                                    <input asp-for="Email" type="email" class="form-control"
+                                        placeholder="Digite seu email" />
+                                    <span asp-validation-for="Email" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 contract-action-buttons">
+                            <a href="@Url.Action("Index", new { tab = "employees" })"
+                                class="contract-btn contract-btn-cancel">
+                                Cancelar
+                            </a>
+                            <button type="submit" class="contract-btn contract-btn-submit">
+                                Cadastrar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

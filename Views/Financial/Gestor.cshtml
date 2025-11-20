@@ -1,0 +1,973 @@
+@model IEnumerable<CondoHub.Models.Entities.Payment>
+@using CondoHub.Models.Entities
+@using System.Globalization
+@{
+    ViewData["Title"] = "Financeiro - Gestor";
+    var totalEsperado = (ViewBag.TotalEsperado as decimal?) ?? 0m;
+    var recebido = (ViewBag.TotalRecebido as decimal?) ?? 0m;
+    var pendente = (ViewBag.TotalPendente as decimal?) ?? 0m;
+    var atrasado = (ViewBag.TotalAtrasado as decimal?) ?? 0m;
+    var percentualRecebido = totalEsperado > 0 ? Math.Round(recebido / totalEsperado * 100) : 0;
+}
+
+@if (User?.Identity != null && User.Identity.IsAuthenticated)
+{
+    <partial name="_Sidebar" />
+}
+
+<div class="finance-header">
+    <div class="d-flex justify-content-between align-items-center w-100" style="height: 100%;">
+        <div class="d-flex align-items-center gap-3">
+            <i class="bi bi-currency-dollar" style="font-size: 36px; color: white;"></i>
+            <div>
+                <h1 class="mb-0 text-white fw-bold" style="font-size: 32px; line-height: 1;">Financeiro</h1>
+                <p class="mb-0 text-white" style="font-size: 14px; opacity: 0.9;">Gestão financeira completa do
+                    condomínio</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="main-content p-5">
+
+    <div style="display:flex; justify-content:center; margin-bottom: 30px;">
+        <div class="tabs-container">
+            <a href="#" class="tab-item tab-nav active" data-tab="visao-geral">Visão Geral</a>
+            <a href="#" class="tab-item tab-nav" data-tab="inadimplencia">Inadimplência</a>
+            <a href="#" class="tab-item tab-nav" data-tab="relatorios">Relatórios</a>
+        </div>
+    </div>
+
+    <div class="card border-0 rounded-3 p-4" id="tab-visao-geral"
+        style="background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+        <div class="row g-3 mb-4">
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="summary-card position-relative p-4" data-summary="esperado">
+                    <div class="card-title text-muted">Total Esperado</div>
+                    <div class="card-value">R$ @totalEsperado.ToString("N2")</div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="summary-card position-relative p-4 received" data-summary="recebido">
+                    <div class="card-title text-muted">Recebido</div>
+                    <div class="card-value">R$ @recebido.ToString("N2")</div>
+                    <div class="card-percent text-success">@percentualRecebido%</div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="summary-card position-relative p-4 pending" data-summary="pendente">
+                    <div class="card-title text-muted">Pendente</div>
+                    <div class="card-value">R$ @pendente.ToString("N2")</div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="summary-card position-relative p-4 overdue" data-summary="atrasado">
+                    <div class="card-title text-muted">Atrasado</div>
+                    <div class="card-value">R$ @atrasado.ToString("N2")</div>
+                </div>
+            </div>
+        </div>
+
+        <h5 class="fw-bold mb-1" style="font-size: 16px;">Pagamentos do Mês</h5>
+        <small class="text-muted d-block mb-3" style="font-size: 12px; font-weight: 400;">
+            @(CultureInfo.CurrentCulture.TextInfo.ToTitleCase(DateTime.Now.ToString("MMMM yyyy")))
+        </small>
+
+        <div style="display:flex; justify-content:center; margin-bottom:10px;">
+            <div class="tabs-container" style="width: fit-content;">
+                <button class="tab-item filter-btn active" data-filter="all">Todos</button>
+                <button class="tab-item filter-btn" data-filter="pago">Pagos</button>
+                <button class="tab-item filter-btn" data-filter="pendente">Pendentes</button>
+                <button class="tab-item filter-btn" data-filter="atrasado">Atrasados</button>
+            </div>
+        </div>
+
+        <div class="list-group">
+            @foreach (var pagamento in (Model ?? Enumerable.Empty<CondoHub.Models.Entities.Payment>()).OrderBy(p =>
+                        p.DataVencimento))
+            {
+                string statusText;
+
+                if (pagamento.Status == PaymentStatus.Pago)
+                {
+                    statusText = "pago";
+                }
+                else if (pagamento.Status == PaymentStatus.Atrasado)
+                {
+                    statusText = "atrasado";
+                }
+                else
+                {
+                    statusText = "pendente";
+                }
+
+                string badgeClass = statusText switch
+                {
+                    "pago" => "badge text-white",
+                    "atrasado" => "badge text-white",
+                    _ => "badge text-white"
+                };
+
+                string badgeStyle = statusText switch
+                {
+                    "pago" => "background-color: #78c97a;",
+                    "atrasado" => "background-color: #f5a5a5;",
+                    _ => "background-color: #ffd966;"
+                };
+
+                var valorStr = pagamento.Total.ToString("N2");
+                var nomeUsuario = string.Empty;
+                var aptoUsuario = string.Empty;
+
+                if (!string.IsNullOrEmpty(pagamento.UserId)
+                && ViewBag.PaymentUserMap is System.Collections.Generic.Dictionary<string, (string Nome, string
+                Apartamento)> map
+                && map.ContainsKey(pagamento.UserId))
+                {
+                    var tuple = map[pagamento.UserId];
+                    nomeUsuario = tuple.Nome ?? string.Empty;
+                    aptoUsuario = tuple.Apartamento ?? string.Empty;
+                }
+
+                var nomeExibir = !string.IsNullOrEmpty(nomeUsuario) ? nomeUsuario :
+                (!string.IsNullOrEmpty(pagamento.UserId) ? pagamento.UserId : "Morador");
+
+                <div class="list-group-item border-0 py-2" data-status="@statusText"
+                    style="background: transparent; padding: 10px 0 !important; border-bottom: 1px solid #e5e5e5;">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div style="flex: 1;">
+                            <p class="mb-1" style="font-size: 13px; color: #1b2a38; font-weight: 500;">
+                                @nomeExibir
+                                @if (!string.IsNullOrEmpty(aptoUsuario))
+                                {
+                                    <span style="color: #8b96a8;"> — @aptoUsuario</span>
+                                }
+                            </p>
+                            <p class="mb-0" style="font-size: 12px; color: #8b96a8;">Vencimento:
+                                @pagamento.DataVencimento.ToString("dd/MM/yyyy")</p>
+                        </div>
+                        <div class="text-end" style="min-width: 120px;">
+                            <p class="mb-1" style="font-size: 13px; color: #1b2a38; font-weight: 500;">R$ @valorStr</p>
+                            <span class="@badgeClass"
+                                style="font-size: 11px; @badgeStyle padding: 4px 10px; display: inline-block;">
+                                @(CultureInfo.CurrentCulture.TextInfo.ToTitleCase(statusText))
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <script>
+            (function () {
+                function setFilter(filter) {
+                    console.log('Filtrando por:', filter);
+
+                    document.querySelectorAll('.list-group .list-group-item').forEach(function (item) {
+                        var status = (item.getAttribute('data-status') || '').trim().toLowerCase();
+                        console.log('Item status:', status);
+
+                        let show = false;
+
+                        if (filter === 'all') {
+                            show = true;
+                        }
+                        else if (filter === 'pago') {
+                            show = (status === 'pago');
+                        }
+                        else if (filter === 'pendente') {
+                            show = (status === 'pendente');
+                        }
+                        else if (filter === 'atrasado') {
+                            show = (status === 'atrasado');
+                        }
+
+                        console.log('Show:', show);
+                        item.style.display = show ? 'block' : 'none';
+                    });
+                }
+
+                document.querySelectorAll('.filter-btn').forEach(function (btn) {
+                    btn.addEventListener('click', function (e) {
+                        e.preventDefault();
+
+                        document.querySelectorAll('.filter-btn').forEach(function (b) {
+                            b.classList.remove('active');
+                        });
+
+                        btn.classList.add('active');
+
+                        const filtro = btn.getAttribute('data-filter') || 'all';
+                        console.log('Data-filter:', filtro);
+                        setFilter(filtro);
+                    });
+                });
+
+                console.log('Iniciando com filtro ALL');
+                setFilter('all');
+            })();
+        </script>
+
+    </div>
+
+    <div class="card border-0 rounded-3 p-4" id="tab-inadimplencia"
+        style="background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: none;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h5 class="fw-bold mb-1" style="font-size: 16px; color: #1b2a38;">Relatório de Inadimplência</h5>
+                <small class="text-muted" style="font-size: 12px; color: #8b96a8; font-weight: 400;">Unidades com
+                    pagamentos em atraso</small>
+            </div>
+            <button class="btn" id="exportar-pdf-btn"
+                style="font-size: 12px; color: #1b2a38; border: 1px solid #d0d5dd; background: white; padding: 8px 14px; border-radius: 6px; font-weight: 500; transition: all 0.2s ease; cursor: pointer;"
+                onmouseover="this.style.background='#f5f5f5'; this.style.borderColor='#b0b5bd';"
+                onmouseout="this.style.background='white'; this.style.borderColor='#d0d5dd';">
+                <i class="bi bi-download" style="margin-right: 4px;"></i> Exportar PDF
+            </button>
+        </div>
+
+        @{
+            var pagamentosAtrasados = (Model ?? Enumerable.Empty<CondoHub.Models.Entities.Payment>())
+            .Where(p => p.Status == PaymentStatus.Atrasado)
+            .OrderBy(p => p.DataVencimento)
+            .ToList();
+        }
+
+        @if (pagamentosAtrasados.Any())
+        {
+            @foreach (var pagamento in pagamentosAtrasados)
+            {
+                var nomeUsuario = string.Empty;
+                var aptoUsuario = string.Empty;
+
+                if (!string.IsNullOrEmpty(pagamento.UserId)
+                && ViewBag.PaymentUserMap is System.Collections.Generic.Dictionary<string, (string Nome, string Apartamento)>
+                map
+                && map.ContainsKey(pagamento.UserId))
+                {
+                    var tuple = map[pagamento.UserId];
+                    nomeUsuario = tuple.Nome ?? string.Empty;
+                    aptoUsuario = tuple.Apartamento ?? string.Empty;
+                }
+
+                var nomeExibir = !string.IsNullOrEmpty(nomeUsuario) ? nomeUsuario :
+                (!string.IsNullOrEmpty(pagamento.UserId) ? pagamento.UserId : "Morador");
+
+                var diasAtraso = (int)(DateTime.Now - pagamento.DataVencimento).TotalDays;
+
+                <div
+                    style="border: 1px solid #f5d5d5; background: #fff5f5; border-radius: 8px; padding: 14px; margin-bottom: 12px;">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <p class="mb-1" style="font-size: 13px; font-weight: 500; color: #1b2a38;">
+                                @aptoUsuario
+                            </p>
+                            <p class="mb-0" style="font-size: 12px; color: #8b96a8;">
+                                @nomeExibir
+                            </p>
+                        </div>
+                        <span class="badge bg-danger" style="font-size: 11px; padding: 4px 10px; font-weight: 500;">@diasAtraso
+                            dias de atraso</span>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <p class="mb-1" style="font-size: 11px; color: #8b96a8; font-weight: 500;">Valor em atraso</p>
+                            <p class="mb-0" style="font-size: 13px; color: #d63031; font-weight: 600;">R$
+                                @pagamento.Total.ToString("N2")</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-1" style="font-size: 11px; color: #8b96a8; font-weight: 500;">Vencimento</p>
+                            <p class="mb-0" style="font-size: 13px; color: #1b2a38; font-weight: 600;">
+                                @pagamento.DataVencimento.ToString("dd/MM/yyyy")</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="bi bi-check-circle" style="font-size: 48px; color: #28a745;"></i>
+                <p class="mt-3 text-muted">Nenhum pagamento em atraso!</p>
+            </div>
+        }
+    </div>
+
+    <div class="card border-0 rounded-3 p-4" id="tab-relatorios"
+        style="background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: none;">
+        <h5 class="fw-bold mb-1" style="font-size: 16px; color: #1b2a38;">Relatórios</h5>
+        <small class="text-muted"
+            style="font-size: 12px; color: #8b96a8; font-weight: 400; margin-bottom: 30px; display: block;">Clique no
+            card para exportar os dados em PDF</small>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div style="background: #f5f9f7; border: 1px solid #d4e9e4; border-radius: 12px; padding: 20px; cursor: pointer; transition: 0.3s;"
+                    onclick="exportarRelatoriMensal()" onmouseover="this.style.background='#eef6f3'"
+                    onmouseout="this.style.background='#f5f9f7'">
+                    <div style="display: flex; align-items: flex-start; gap: 15px;">
+                        <div
+                            style="background: #c3e8dd; width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z"
+                                    stroke="#0d7d5f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M14 2V8H20" stroke="#0d7d5f" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                                <path d="M8 13H16M8 17H12" stroke="#0d7d5f" stroke-width="2" stroke-linecap="round" />
+                                <path d="M7 10C7.5 9.5 9 9 10 10" stroke="#0d7d5f" stroke-width="1.5"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </div>
+                        <div style="flex: 1;">
+                            <h6 class="fw-bold mb-1" style="font-size: 13px; color: #1b2a38;">Relatório Mensal</h6>
+                            <p class="mb-0" style="font-size: 12px; color: #8b96a8;">Receitas, despesas e inadimplência
+                            </p>
+                        </div>
+                        <div style="color: #8b96a8; font-size: 20px; flex-shrink: 0;">
+                            <i class="bi bi-download"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div style="background: #f5f9f7; border: 1px solid #d4e9e4; border-radius: 12px; padding: 20px; cursor: pointer; transition: 0.3s;"
+                    onclick="exportarRelatoriAnual()" onmouseover="this.style.background='#eef6f3'"
+                    onmouseout="this.style.background='#f5f9f7'">
+                    <div style="display: flex; align-items: flex-start; gap: 15px;">
+                        <div
+                            style="background: #c3e8dd; width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z"
+                                    stroke="#0d7d5f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M14 2V8H20" stroke="#0d7d5f" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                                <path d="M8 13H16M8 17H12" stroke="#0d7d5f" stroke-width="2" stroke-linecap="round" />
+                                <path d="M7 10C7.5 9.5 9 9 10 10" stroke="#0d7d5f" stroke-width="1.5"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </div>
+                        <div style="flex: 1;">
+                            <h6 class="fw-bold mb-1" style="font-size: 13px; color: #1b2a38;">Relatório Anual</h6>
+                            <p class="mb-0" style="font-size: 12px; color: #8b96a8;">Resumo financeiro do ano</p>
+                        </div>
+                        <div style="color: #8b96a8; font-size: 20px; flex-shrink: 0;">
+                            <i class="bi bi-download"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    (function () {
+        document.querySelectorAll('.tab-nav').forEach(function (tab) {
+            tab.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                document.querySelectorAll('.tab-nav').forEach(function (t) {
+                    t.classList.remove('active');
+                });
+
+                document.querySelectorAll('[id^="tab-"]').forEach(function (content) {
+                    content.style.display = 'none';
+                });
+
+                tab.classList.add('active');
+
+                const tabName = tab.getAttribute('data-tab');
+                const tabContent = document.getElementById('tab-' + tabName);
+                if (tabContent) {
+                    tabContent.style.display = 'block';
+                }
+            });
+        });
+    })();
+
+    (function () {
+        if (typeof Chart === 'undefined') {
+            console.warn('Chart.js não foi carregada');
+            return;
+        }
+
+        const pagamentos = @Html.Raw(Json.Serialize(Model ?? new List<Payment>()));
+
+        console.log('Pagamentos:', pagamentos);
+
+        if (!pagamentos || pagamentos.length === 0) {
+            console.log('Nenhum pagamento encontrado');
+            return;
+        }
+
+        const eventosPorMes = {};
+        const statusContagem = { pago: 0, pendente: 0, atrasado: 0 };
+
+        pagamentos.forEach(p => {
+            try {
+                const data = new Date(p.dataVencimento);
+                const mesAbr = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'][data.getMonth()];
+
+                if (!eventosPorMes[mesAbr]) {
+                    eventosPorMes[mesAbr] = { recebido: 0, esperado: 0 };
+                }
+
+                eventosPorMes[mesAbr].esperado += p.total;
+
+                const statusStr = String(p.status).toLowerCase();
+                if (statusStr === 'pago' || p.status === 1) {
+                    eventosPorMes[mesAbr].recebido += p.total;
+                    statusContagem.pago++;
+                } else if (statusStr === 'atrasado' || p.status === 2) {
+                    statusContagem.atrasado++;
+                } else {
+                    statusContagem.pendente++;
+                }
+            } catch (e) {
+                console.error('Erro ao processar pagamento:', p, e);
+            }
+        });
+
+        console.log('Eventos por mês:', eventosPorMes);
+        console.log('Status contagem:', statusContagem);
+
+        const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+        const recebidoData = meses.map(m => (eventosPorMes[m]?.recebido || 0));
+        const esperadoData = meses.map(m => (eventosPorMes[m]?.esperado || 0));
+
+        setTimeout(function () {
+            const ctxEvolucao = document.getElementById('chartEvolucao');
+            if (ctxEvolucao && typeof Chart !== 'undefined') {
+                console.log('Criando gráfico de evolução...');
+                new Chart(ctxEvolucao, {
+                    type: 'bar',
+                    data: {
+                        labels: meses,
+                        datasets: [
+                            {
+                                label: 'Recebido',
+                                data: recebidoData,
+                                backgroundColor: '#0d7d5f',
+                                borderRadius: 3,
+                                borderSkipped: false,
+                                barPercentage: 0.7,
+                                categoryPercentage: 0.8
+                            },
+                            {
+                                label: 'Esperado',
+                                data: esperadoData,
+                                backgroundColor: '#c9cdd2',
+                                borderRadius: 3,
+                                borderSkipped: false,
+                                barPercentage: 0.7,
+                                categoryPercentage: 0.8
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        indexAxis: 'x',
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'bottom',
+                                labels: {
+                                    font: { size: 12, weight: '500' },
+                                    padding: 20,
+                                    usePointStyle: true,
+                                    pointStyle: 'circle',
+                                    color: '#1b2a38'
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0,0,0,0.8)',
+                                padding: 10,
+                                titleFont: { size: 12 },
+                                bodyFont: { size: 11 }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    font: { size: 11 },
+                                    color: '#8b96a8'
+                                },
+                                grid: {
+                                    color: 'rgba(0,0,0,0.05)'
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    font: { size: 12 },
+                                    color: '#1b2a38'
+                                },
+                                grid: { display: false }
+                            }
+                        }
+                    }
+                });
+            }
+        }, 500);
+
+        const total = statusContagem.pago + statusContagem.pendente + statusContagem.atrasado;
+        if (total > 0) {
+            const percPago = (statusContagem.pago / total) * 100;
+            const percPendente = (statusContagem.pendente / total) * 100;
+            const percAtrasado = (statusContagem.atrasado / total) * 100;
+
+            document.getElementById('barPagos').style.width = percPago + '%';
+            document.getElementById('barPendentes').style.width = percPendente + '%';
+            document.getElementById('barAtrasados').style.width = percAtrasado + '%';
+
+            document.getElementById('textPagos').textContent = statusContagem.pago + ' unidades (' + Math.round(percPago) + '%)';
+            document.getElementById('textPendentes').textContent = statusContagem.pendente + ' unidades (' + Math.round(percPendente) + '%)';
+            document.getElementById('textAtrasados').textContent = statusContagem.atrasado + ' unidades (' + Math.round(percAtrasado) + '%)';
+        }
+
+        setTimeout(function () {
+            const ctxAdimplencia = document.getElementById('chartAdimplencia');
+            if (ctxAdimplencia && typeof Chart !== 'undefined') {
+                console.log('Criando gráfico de adimplência...');
+                const percAdimplentes = total > 0 ? Math.round((statusContagem.pago / total) * 100) : 0;
+                const percInadimplentes = 100 - percAdimplentes;
+
+                const chartAdimplencia = new Chart(ctxAdimplencia, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Adimplentes', 'Inadimplentes'],
+                        datasets: [{
+                            data: [percAdimplentes, percInadimplentes],
+                            backgroundColor: ['#0d7d5f', '#c9cdd2'],
+                            borderColor: 'white',
+                            borderWidth: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { display: true }
+                        }
+                    },
+                    plugins: [{
+                        id: 'textCenter',
+                        beforeDatasetsDraw(chart) {
+                            const { width, height, ctx } = chart;
+                            ctx.restore();
+
+                            const fontSize = (height / 200).toFixed(2);
+                            ctx.textBaseline = 'middle';
+
+                            const text = percInadimplentes + '%';
+                            ctx.font = 'bold 24px sans-serif';
+                            ctx.fillStyle = '#1b2a38';
+                            ctx.textAlign = 'center';
+                            ctx.fillText(text, width / 2, height / 2 - 5);
+
+                            ctx.font = '12px sans-serif';
+                            ctx.fillStyle = '#8b96a8';
+                            ctx.fillText('inadimplentes', width / 2, height / 2 + 18);
+
+                            ctx.save();
+                        }
+                    }]
+                });
+            }
+        }, 500);
+    })();
+    (function () {
+        const btnExportarPdf = document.getElementById('exportar-pdf-btn');
+        if (btnExportarPdf) {
+            btnExportarPdf.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                if (typeof window.jspdf === 'undefined') {
+                    console.error('jsPDF não foi carregada');
+                    return;
+                }
+
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+
+                doc.setFontSize(16);
+                doc.setTextColor(13, 125, 95);
+                doc.text('Relatório de Inadimplência', 14, 20);
+
+                doc.setFontSize(10);
+                doc.setTextColor(100);
+                doc.text('Gerado em: ' + new Date().toLocaleDateString('pt-BR'), 14, 30);
+
+                doc.setDrawColor(13, 125, 95);
+                doc.line(14, 35, 196, 35);
+
+                let yPosition = 45;
+                const items = document.querySelectorAll('#tab-inadimplencia .card');
+                let itemCount = 0;
+
+                items.forEach((item) => {
+                    if (yPosition > 270) {
+                        doc.addPage();
+                        yPosition = 20;
+                    }
+
+                    const apartamento = item.querySelector('h6').textContent || 'Apto.';
+                    const morador = item.querySelector('p.text-muted').textContent || 'Morador';
+                    const diasAtraso = item.querySelector('.badge').textContent || '';
+
+                    const labels = item.querySelectorAll('p.text-muted');
+                    const valores = item.querySelectorAll('h6');
+
+                    let valor = 'R$ 0,00';
+                    let vencimento = '00/00/0000';
+
+                    if (valores.length > 1) {
+                        valor = valores[1].textContent;
+                    }
+                    if (valores.length > 2) {
+                        vencimento = valores[2].textContent;
+                    }
+
+                    doc.setFontSize(11);
+                    doc.setTextColor(0);
+                    doc.setFont(undefined, 'bold');
+                    doc.text(apartamento, 14, yPosition);
+
+                    doc.setFontSize(10);
+                    doc.setTextColor(100);
+                    doc.setFont(undefined, 'normal');
+                    doc.text(morador, 14, yPosition + 6);
+
+                    doc.setTextColor(13, 125, 95);
+                    doc.text(diasAtraso, 180, yPosition - 6);
+
+                    doc.setTextColor(255, 0, 0);
+                    doc.text('Valor em atraso: ' + valor, 14, yPosition + 12);
+
+                    doc.setTextColor(0);
+                    doc.text('Vencimento: ' + vencimento, 14, yPosition + 18);
+
+                    doc.setDrawColor(200);
+                    doc.line(14, yPosition + 22, 196, yPosition + 22);
+
+                    yPosition += 28;
+                    itemCount++;
+                });
+
+                doc.setFontSize(9);
+                doc.setTextColor(150);
+                doc.text('Total de inadimplências: ' + itemCount, 14, doc.internal.pageSize.getHeight() - 10);
+
+                doc.save('relatorio-inadimplencia-' + new Date().toISOString().split('T')[0] + '.pdf');
+            });
+        }
+    })();
+
+    function exportarRelatoriMensal() {
+        if (typeof window.jspdf === 'undefined') {
+            alert('Biblioteca de PDF não foi carregada');
+            return;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        doc.setFontSize(16);
+        doc.setTextColor(13, 125, 95);
+        doc.text('Relatório Mensal Completo', 14, 20);
+
+        doc.setFontSize(10);
+        doc.setTextColor(100);
+        doc.text('Gerado em: ' + new Date().toLocaleDateString('pt-BR'), 14, 30);
+
+        doc.setDrawColor(13, 125, 95);
+        doc.line(14, 35, 196, 35);
+
+        let yPosition = 45;
+        doc.setFontSize(12);
+        doc.setTextColor(13, 125, 95);
+        doc.setFont(undefined, 'bold');
+        doc.text('Resumo Financeiro', 14, yPosition);
+
+        yPosition += 10;
+        doc.setFontSize(10);
+        doc.setTextColor(0);
+        doc.setFont(undefined, 'normal');
+
+        const summaryData = [
+            { label: 'Total Esperado:', value: document.querySelector('[data-summary="esperado"]')?.textContent || 'R$ 0,00' },
+            { label: 'Total Recebido:', value: document.querySelector('[data-summary="recebido"]')?.textContent || 'R$ 0,00' },
+            { label: 'Total Pendente:', value: document.querySelector('[data-summary="pendente"]')?.textContent || 'R$ 0,00' },
+            { label: 'Total Atrasado:', value: document.querySelector('[data-summary="atrasado"]')?.textContent || 'R$ 0,00' }
+        ];
+
+        summaryData.forEach((item) => {
+            doc.text(item.label + ' ' + item.value, 14, yPosition);
+            yPosition += 7;
+        });
+
+        yPosition += 10;
+        doc.setFontSize(12);
+        doc.setTextColor(13, 125, 95);
+        doc.setFont(undefined, 'bold');
+        doc.text('Pagamentos do Mês', 14, yPosition);
+
+        yPosition += 10;
+        const paymentItems = document.querySelectorAll('#tab-visao-geral .list-group-item');
+        let paymentCount = 0;
+
+        paymentItems.forEach((item) => {
+            if (yPosition > 270) {
+                doc.addPage();
+                yPosition = 20;
+            }
+
+            const nameText = item.textContent;
+            doc.setFontSize(10);
+            doc.setTextColor(0);
+            doc.setFont(undefined, 'normal');
+            doc.text('• ' + nameText.trim().substring(0, 50), 14, yPosition);
+
+            yPosition += 6;
+            paymentCount++;
+        });
+
+        doc.setFontSize(9);
+        doc.setTextColor(150);
+        doc.text('Total de pagamentos: ' + paymentCount, 14, doc.internal.pageSize.getHeight() - 10);
+
+        doc.save('relatorio-mensal-' + new Date().toISOString().split('T')[0] + '.pdf');
+    }
+
+    function exportarRelatoriAnual() {
+        if (typeof window.jspdf === 'undefined') {
+            alert('Biblioteca de PDF não foi carregada');
+            return;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        doc.setFontSize(16);
+        doc.setTextColor(13, 125, 95);
+        doc.text('Relatório Anual', 14, 20);
+
+        doc.setFontSize(10);
+        doc.setTextColor(100);
+        doc.text('Gerado em: ' + new Date().toLocaleDateString('pt-BR'), 14, 30);
+        doc.text('Período: ' + new Date().getFullYear(), 14, 37);
+
+        doc.setDrawColor(13, 125, 95);
+        doc.line(14, 42, 196, 42);
+
+        let yPosition = 52;
+        doc.setFontSize(12);
+        doc.setTextColor(13, 125, 95);
+        doc.setFont(undefined, 'bold');
+        doc.text('Resumo Financeiro Anual', 14, yPosition);
+
+        yPosition += 10;
+        doc.setFontSize(10);
+        doc.setTextColor(0);
+        doc.setFont(undefined, 'normal');
+
+        const annualSummary = [
+            { label: 'Total Esperado:', value: document.querySelector('[data-summary="esperado"]')?.textContent || 'R$ 0,00' },
+            { label: 'Total Recebido:', value: document.querySelector('[data-summary="recebido"]')?.textContent || 'R$ 0,00' },
+            { label: 'Total Pendente:', value: document.querySelector('[data-summary="pendente"]')?.textContent || 'R$ 0,00' },
+            { label: 'Total Atrasado:', value: document.querySelector('[data-summary="atrasado"]')?.textContent || 'R$ 0,00' }
+        ];
+
+        annualSummary.forEach((item) => {
+            doc.text(item.label + ' ' + item.value, 14, yPosition);
+            yPosition += 7;
+        });
+
+        yPosition += 10;
+        doc.setFontSize(11);
+        doc.setTextColor(100);
+        doc.text('Relatório gerado automaticamente pelo sistema CondoHub', 14, yPosition);
+
+        doc.save('relatorio-anual-' + new Date().getFullYear() + '.pdf');
+    }
+
+    function exportarInadimplentesHistorico() {
+        if (typeof window.jspdf === 'undefined') {
+            alert('Biblioteca de PDF não foi carregada');
+            return;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        doc.setFontSize(16);
+        doc.setTextColor(13, 125, 95);
+        doc.text('Inadimplentes - Histórico Completo', 14, 20);
+
+        doc.setFontSize(10);
+        doc.setTextColor(100);
+        doc.text('Gerado em: ' + new Date().toLocaleDateString('pt-BR'), 14, 30);
+
+        doc.setDrawColor(13, 125, 95);
+        doc.line(14, 35, 196, 35);
+
+        let yPosition = 45;
+        const inadimplentesItems = document.querySelectorAll('#tab-inadimplencia .card');
+        let inadimplentesCount = 0;
+
+        inadimplentesItems.forEach((item) => {
+            if (yPosition > 270) {
+                doc.addPage();
+                yPosition = 20;
+            }
+
+            const apartamento = item.querySelector('h6')?.textContent || 'Apto.';
+            const morador = item.querySelector('p.text-muted')?.textContent || 'Morador';
+            const diasAtraso = item.querySelector('.badge')?.textContent || '';
+
+            const valores = item.querySelectorAll('h6');
+            let valor = 'R$ 0,00';
+            let vencimento = '00/00/0000';
+
+            if (valores.length > 1) {
+                valor = valores[1]?.textContent || 'R$ 0,00';
+            }
+            if (valores.length > 2) {
+                vencimento = valores[2]?.textContent || '00/00/0000';
+            }
+
+            doc.setFontSize(11);
+            doc.setTextColor(0);
+            doc.setFont(undefined, 'bold');
+            doc.text(apartamento, 14, yPosition);
+
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            doc.setFont(undefined, 'normal');
+            doc.text(morador, 14, yPosition + 6);
+
+            doc.setTextColor(13, 125, 95);
+            doc.text(diasAtraso, 14, yPosition + 12);
+
+            doc.setTextColor(220, 48, 49);
+            doc.text('Valor: ' + valor, 14, yPosition + 18);
+
+            doc.setTextColor(0);
+            doc.text('Vencimento: ' + vencimento, 14, yPosition + 24);
+
+            doc.setDrawColor(200);
+            doc.line(14, yPosition + 28, 196, yPosition + 28);
+
+            yPosition += 35;
+            inadimplentesCount++;
+        });
+
+        doc.setFontSize(9);
+        doc.setTextColor(150);
+        doc.text('Total de inadimplentes: ' + inadimplentesCount, 14, doc.internal.pageSize.getHeight() - 10);
+
+        doc.save('relatorio-inadimplentes-historico-' + new Date().toISOString().split('T')[0] + '.pdf');
+    }
+</script>
+
+<style>
+    body {
+        background: #f9fafb;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
+    .finance-header {
+        position: fixed;
+        top: 0;
+        left: 250px;
+        height: 120px;
+        width: calc(100% - 250px);
+        /* Gradiente atualizado para ficar mais próximo da referência */
+        background: linear-gradient(90deg, #12b886 0%, #0a6b4f 100%);
+        background-size: cover;
+        padding: 25px 0 25px 20px;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        box-shadow: inset 0 -20px 40px rgba(0,0,0,0.06);
+    }
+
+    .main-content {
+        margin-left: 250px;
+        margin-top: 120px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .tabs-container {
+        background: #f5f5f5;
+        padding: 10px 18px;
+        display: flex;
+        gap: 26px;
+        border-radius: 20px;
+        box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
+        width: fit-content;
+    }
+
+    .tab-item {
+        font-size: 15px;
+        color: #1b2a38;
+        text-decoration: none;
+        font-weight: 500;
+        padding: 10px 22px;
+        border-radius: 18px;
+        transition: 0.2s;
+        border: none;
+        background: transparent;
+        outline: none;
+        box-shadow: none;
+    }
+
+    .tab-item:hover {
+        background: transparent;
+        color: #1b2a38;
+    }
+
+    .tab-item:focus {
+        outline: none;
+        box-shadow: none;
+        background: transparent;
+    }
+
+    .tab-item.active {
+        background: white;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+        transform: translateY(-2px);
+    }
+
+    .summary-card {
+        background: #ffffff;
+        border-radius: 12px;
+        border: 1px solid rgba(15, 23, 42, 0.04);
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+        height: 140px;
+        position: relative;
+        overflow: visible;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        padding: 20px;
+    }
+
+    .list-group-item:hover {
+        background-color: #fafafa;
+    }
+</style>

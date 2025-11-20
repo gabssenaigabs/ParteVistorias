@@ -1,0 +1,181 @@
+:root {
+    --muted: #6c757d;
+    --card-border: #e9ecef;
+    --bg: #fff
+}
+
+.nav-tabs {
+    display: flex;
+    flex-wrap: nowrap !important
+}
+
+.nav-tabs .nav-link {
+    white-space: nowrap;
+    flex-shrink: 0
+}
+
+.contract-row {
+    border-radius: 12px;
+    border: 1px solid var(--card-border);
+    box-shadow: 0 6px 18px rgba(8, 15, 52, 0.03)
+}
+
+.contract-row .card-body {
+    display: grid;
+    grid-template-columns: 64px 1fr 110px;
+    gap: 1rem;
+    align-items: start
+}
+
+.icon-wrapper {
+    grid-column: 1
+}
+
+.icon-box {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f3e8ff, #fbe8ff);
+}
+
+.icon-box.blue {
+    background: linear-gradient(135deg, #eef2ff, #e0e7ff)
+}
+
+.icon-box.green {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7)
+}
+
+.icon-file {
+    font-size: 1.3rem;
+    color: #7c3aed
+}
+
+.icon-box.blue .icon-file {
+    color: #3b82f6
+}
+
+.icon-box.green .icon-file {
+    color: #16a34a
+}
+
+.contract-main {
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem
+}
+
+.contract-title {
+    font-size: 1.05rem;
+    margin: 0
+}
+
+.contract-subtitle {
+    color: var(--muted);
+    margin: 0;
+    font-size: 0.95rem
+}
+
+.contract-badge-wrapper {
+    grid-column: 3;
+    grid-row: 1;
+    display: flex;
+    justify-content: flex-end
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .4rem .7rem;
+    border-radius: 999px;
+    font-size: .85rem;
+    font-weight: 500
+}
+
+.badge-warning {
+    background: #ff7a18;
+    color: #fff
+}
+
+.badge-danger {
+    background: #dc3545;
+    color: #fff
+}
+
+.badge-info {
+    background: #a855f7;
+    color: #fff
+}
+
+.badge-success {
+    background: #10b981;
+    color: #fff
+}
+
+.actions-col {
+    grid-column: 1/-1;
+    display: flex;
+    flex-direction: row;
+    gap: 0.75rem
+}
+
+.actions-col .btn {
+    flex: 1;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    padding: 0.5rem 0.8rem
+}
+
+.text-warning {
+    color: #f97316;
+    font-weight: 600
+}
+
+@media (max-width:768px) {
+    .contract-row .card-body {
+        grid-template-columns: 56px 1fr;
+        gap: 0.75rem;
+        padding: 1rem
+    }
+
+    .icon-wrapper {
+        grid-column: 1;
+        grid-row: 1
+    }
+
+    .contract-main {
+        grid-column: 2;
+        grid-row: 1
+    }
+
+    .contract-badge-wrapper {
+        grid-column: 2;
+        grid-row: 2;
+        display: flex;
+        justify-content: flex-start;
+        margin-top: 0.5rem
+    }
+
+    .actions-col {
+        grid-column: 1/-1;
+        grid-row: 3;
+        margin-top: 0.5rem;
+        gap: 0.5rem
+    }
+
+    .actions-col .btn {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.6rem
+    }
+
+    .icon-box {
+        width: 48px;
+        height: 48px;
+        flex-shrink: 0
+    }
+}

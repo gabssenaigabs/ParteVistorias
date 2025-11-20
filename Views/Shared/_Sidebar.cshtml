@@ -1,0 +1,65 @@
+@using System.Security.Claims
+@{
+    var nome = (User as ClaimsPrincipal)?.FindFirst("Nome")?.Value ?? "US";
+    var tipo = (User as ClaimsPrincipal)?.FindFirst("TipoUsuario")?.Value ?? "Usuário";
+}
+<div class="sidebar">
+    <div class="sidebar-logo"
+        style="display: flex; align-items: center; justify-content: center; gap: 8px; padding-left: 10px;">
+        <div class="logo-box">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+        </div>
+        <span class="sidebar-title" style="text-align: center;">CondoHub</span>
+    </div>
+    <div style="height:1px; background:#eef3f9; margin:0px 0;"></div>
+    <div class="sidebar-user">
+        <div class="sidebar-avatar">
+            @(nome.Length > 1 ? nome.Substring(0, 2).ToUpper() : "US")
+        </div>
+        <div>
+            <span class="sidebar-username">@nome</span><br />
+            <span class="sidebar-role"
+                style="background:@(tipo == "Gestor" ? "#16a34a" : tipo == "Morador" ? "#14b8a6" : tipo == "Sindico" ? "#a855f7" : "#e3e7fd");">
+                @tipo
+            </span>
+        </div>
+    </div>
+    <div style="height:1px; background:#eef3f9; margin:2px 0;"></div>
+    <ul class="sidebar-menu">
+        <li><a href="/Home/Index" class="menu-item"><i class="bi bi-house"></i> Dashboard</a></li>
+        <li><a href="#" class="menu-item"><i class="bi bi-bar-chart"></i> Relatórios</a></li>
+        <li><a asp-controller="Properties" asp-action="Index" class="menu-item"><i class="bi bi-building"></i>
+                Imóveis</a></li>
+        @if (tipo == "Gestor" || tipo == "Sindico")
+        {
+            <li><a asp-controller="Contracts" asp-action="Index" class="menu-item"><i class="bi bi-file-earmark-text"></i>
+                    Contratos</a></li>
+        }
+        @if (tipo == "Morador" || tipo == "Sindico")
+        {
+            <li><a asp-controller="Financial" asp-action="Index" class="menu-item"><i class="bi bi-currency-dollar"></i>
+                    Pagamentos</a></li>
+        }
+        else
+        {
+            <li><a asp-controller="Financial" asp-action="Index" class="menu-item"><i class="bi bi-currency-dollar"></i>
+                    Financeiro</a></li>
+        }
+        <li><a href="#" class="menu-item"><i class="bi bi-bell"></i> Mural de Avisos</a></li>
+        <li><a href="#" class="menu-item"><i class="bi bi-tools"></i> Manutenções</a></li>
+        <li><a asp-controller="Notice" asp-action="Index" class="menu-item"><i class="bi bi-clipboard-check"></i> Vistorias</a></li>
+        <li><a href="#" class="menu-item"><i class="bi bi-shield-lock"></i> Controle de Acesso</a></li>
+        @if (tipo == "Gestor")
+        {
+            <li><a href="#" class="menu-item"><i class="bi bi-search"></i> Auditoria</a></li>
+            <li><a href="#" class="menu-item"><i class="bi bi-hdd"></i> Backup</a></li>
+        }
+    </ul>
+    <div class="sidebar-logout">
+        <a href="/Account/Logout" class="menu-item text-danger"><i class="bi bi-box-arrow-right"></i> Sair</a>
+    </div>
+</div>

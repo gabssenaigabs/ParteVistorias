@@ -1,0 +1,120 @@
+@model CondoHub.Models.Entities.Property
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Detalhes do Imóvel";
+}
+
+<h2>Detalhes do Imóvel</h2>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">ID</dt>
+            <dd class="col-sm-9">@Model.Id</dd>
+
+            <dt class="col-sm-3">Bloco</dt>
+            <dd class="col-sm-9">@Model.Bloco</dd>
+
+            <dt class="col-sm-3">Número</dt>
+            <dd class="col-sm-9">@Model.Numero</dd>
+
+            <dt class="col-sm-3">Tipo</dt>
+            <dd class="col-sm-9">@Model.TipoImovel ?? "—"</dd>
+
+            <dt class="col-sm-3">Status</dt>
+            <dd class="col-sm-9">@Model.Type.ToString()</dd>
+
+            <dt class="col-sm-3">Área</dt>
+            <dd class="col-sm-9">@Model.Area</dd>
+
+            <dt class="col-sm-3">Proprietário</dt>
+            <dd class="col-sm-9">@((Model.Proprietario != null && !string.IsNullOrWhiteSpace(Model.Proprietario.Nome)) ? Model.Proprietario.Nome : (Model.ProprietarioNome ?? "—"))</dd>
+        </dl>
+
+        <div class="d-flex gap-2">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
+
+            <form asp-action="Delete" method="post" class="js-delete-property">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <button type="submit" class="btn btn-danger">Excluir</button>
+            </form>
+
+            <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('form.js-delete-property');
+        if (!form) return;
+
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const tokenInput = form.querySelector('input[name="__RequestVerificationToken"]');
+            const token = tokenInput ? tokenInput.value : null;
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'RequestVerificationToken': token
+                    },
+                    body: formData
+                });
+
+                if (response.ok || response.status === 204) {
+                    window.location.href = '@Url.Action("Index","Properties")';
+                } else {
+                    window.location.href = '@Url.Action("Index","Properties")';
+                }
+            } catch (err) {
+                window.location.href = '@Url.Action("Index","Properties")';
+            }
+
+            const alertsContainer = document.createElement('div');
+            alertsContainer.className = 'mt-3';
+            form.parentNode.parentNode.appendChild(alertsContainer);
+
+            form.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const tokenInput = form.querySelector('input[name="__RequestVerificationToken"]');
+                const token = tokenInput ? tokenInput.value : null;
+                const formData = new FormData(form);
+
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'RequestVerificationToken': token
+                        },
+                        body: formData
+                    });
+
+                    if (response.status === 409) {
+                        let data = {};
+                        try { data = await response.json(); } catch (ex) { }
+                        const msg = data.message || 'Não foi possível excluir o imóvel.';
+                        alertsContainer.innerHTML = `<div class="alert alert-danger">${msg}</div>`;
+                        return;
+                    }
+
+                    if (response.ok || response.status === 204) {
+                        window.location.href = '@Url.Action("Index","Properties")';
+                    } else {
+                        window.location.href = '@Url.Action("Index","Properties")';
+                    }
+                } catch (err) {
+                    window.location.href = '@Url.Action("Index","Properties")';
+                }
+            });
+    });
+</script>

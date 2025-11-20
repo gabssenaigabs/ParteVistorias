@@ -1,0 +1,119 @@
+@using CondoHub.Models.ViewModels
+@model RegisterSindicoViewModel
+@{
+    ViewData["Title"] = "Cadastro Síndico";
+}
+
+<div class="auth-page d-flex align-items-center justify-content-center min-vh-100">
+    <div class="auth-container text-center">
+        <div class="mb-8">
+            <div class="logo-wrap d-inline-flex mb-4">
+                <div class="logo-icon bg-purple-100 rounded-xl d-flex align-items-center justify-content-center">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        class="icon-inner text-purple" aria-hidden="true">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                </div>
+            </div>
+            <h1 class="app-title">Cadastro de Síndico</h1>
+            <p class="app-subtitle">Preencha seus dados para criar sua conta</p>
+        </div>
+
+        <div class="auth-card mx-auto">
+
+            <form asp-action="RegisterSindico" method="post" class="space-y-4">
+                <div class="space-y-2">
+                    <label asp-for="Nome" class="form-label">Nome Completo *</label>
+                    <div class="input-group no-icon">
+                        <input asp-for="Nome" class="form-control form-control-lg"
+                            placeholder="Digite seu nome completo" />
+                    </div>
+                    <span asp-validation-for="Nome" class="text-danger"></span>
+                </div>
+
+                <div class="space-y-2">
+                    <label asp-for="Email" class="form-label">E-mail *</label>
+                    <div class="input-group no-icon">
+                        <input asp-for="Email" class="form-control form-control-lg" placeholder="Digite seu e-mail" />
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="grid gap-4 grid-cols-2">
+                    <div class="space-y-2">
+                        <label asp-for="CPF" class="form-label">CPF *</label>
+                        <div class="input-group no-icon">
+                            <input asp-for="CPF" class="form-control form-control-lg" placeholder="000.000.000-00" />
+                        </div>
+                        <span asp-validation-for="CPF" class="text-danger"></span>
+                    </div>
+                    <div class="space-y-2">
+                        <label asp-for="Telefone" class="form-label">Telefone *</label>
+                        <div class="input-group no-icon">
+                            <input asp-for="Telefone" class="form-control form-control-lg"
+                                placeholder="(00) 00000-0000" />
+                        </div>
+                        <span asp-validation-for="Telefone" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="grid gap-4 grid-cols-2">
+                    <div class="space-y-2">
+                        <label asp-for="BlocoResidencia" class="form-label">Bloco de Residência *</label>
+                        <div class="input-group no-icon">
+                            <input asp-for="BlocoResidencia" class="form-control form-control-lg"
+                                placeholder="A, B, C..." />
+                        </div>
+                        <span asp-validation-for="BlocoResidencia" class="text-danger"></span>
+                    </div>
+                    <div class="space-y-2">
+                        <label asp-for="Apartamento" class="form-label">Unidade</label>
+                        <div class="input-group no-icon">
+                            <input asp-for="Apartamento" class="form-control form-control-lg"
+                                placeholder="101, 102..." />
+                        </div>
+                        <span asp-validation-for="Apartamento" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label asp-for="InicioMandato" class="form-label">Início do Mandato *</label>
+                    <div class="input-group no-icon">
+                        <input asp-for="InicioMandato" type="date" class="form-control form-control-lg" />
+                    </div>
+                    <span asp-validation-for="InicioMandato" class="text-danger"></span>
+                </div>
+
+                <div class="space-y-2">
+                    <label asp-for="Senha" class="form-label">Senha *</label>
+                    <div class="input-group no-icon">
+                        <input asp-for="Senha" type="password" class="form-control form-control-lg"
+                            placeholder="Mínimo 6 caracteres" />
+                    </div>
+                    <span asp-validation-for="Senha" class="text-danger"></span>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="form-label">Confirmar Senha *</label>
+                    <div class="input-group no-icon">
+                        <input name="ConfirmarSenha" type="password" class="form-control form-control-lg"
+                            placeholder="Digite a senha novamente" />
+                    </div>
+                </div>
+
+                <div class="space-y-3 pt-4">
+                    <button type="submit" class="btn btn-purple btn-lg w-100">Criar Conta</button>
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-outline-secondary w-100">Voltar</a>
+                </div>
+            </form>
+
+            <div class="mt-4 text-center">
+                <span class="small text-gray-600">Já tem uma conta? </span>
+                <a asp-controller="Account" asp-action="Login" class="small link-primary text-decoration-none">Fazer
+                    login</a>
+            </div>
+        </div>
+
+        <div class="mt-4 text-gray-500 small">© 2025 CondoHub. Todos os direitos reservados.</div>
+    </div>
+</div>

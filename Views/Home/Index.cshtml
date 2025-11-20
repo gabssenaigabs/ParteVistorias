@@ -1,0 +1,9 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@if (User?.Identity != null && User.Identity.IsAuthenticated)
+{
+    <partial name="_Sidebar" />
+}
+<div class="main-content"></div>

@@ -1,0 +1,1704 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+  overflow-y: scroll;
+}
+
+body {
+  margin-bottom: 60px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+  color: #213547;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+}
+
+.auth-page {
+  min-height: 100vh;
+  background: #ffffff;
+  padding: 48px 16px;
+}
+
+.auth-container {
+  max-width: 480px;
+  width: 100%;
+}
+
+.auth-container .form-label {
+  text-align: left;
+  display: block;
+  width: 100%;
+}
+
+.logo-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #EAF4FF;
+  color: #0B66FF;
+}
+
+.logo-icon.bg-purple-100 {
+  background: #F3E8FF;
+  color: #9333EA;
+}
+
+.logo-icon svg {
+  width: 32px;
+  height: 32px;
+}
+
+.logo-icon svg.text-purple-600 {
+  color: #9333EA;
+}
+
+.app-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #14284B;
+  margin: 12px 0 6px;
+}
+
+/* Login header: align logo and title horizontally */
+.login-header .logo-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #EAF4FF;
+  color: #0B66FF;
+}
+
+.login-header .app-title {
+  margin: 0;
+  font-size: 24px;
+}
+
+.app-subtitle {
+  font-size: 14px;
+  color: #6b7884;
+  margin-bottom: 28px;
+}
+
+/* Contracts tabs labels: match global app typography (font family + weight) */
+.contracts-tabs .tab-trigger .label {
+  font-family: inherit;
+  /* use same font stack as body / app-title */
+  font-weight: 600;
+  /* strong, matches app-title weight */
+  font-size: 15px;
+  /* visually aligned with mock */
+  color: #14284B;
+}
+
+.contracts-header .app-title {
+  /* ensure slightly smaller than main app-title where needed */
+  font-size: 22px;
+  font-weight: 700;
+  /* match imoveis-header app-title */
+}
+
+/* Imóveis header should match Contracts header (size, weight, spacing) */
+.imoveis-header .app-title {
+  font-size: 22px;
+  font-weight: 700;
+  /* tornar igual ao app-title (negrito como logo) */
+  color: #14284B;
+  /* cor principal usada no cabeçalho/logo */
+  margin: 0 0 4px 0;
+}
+
+.imoveis-header .app-subtitle {
+  /* match global app-subtitle used on auth pages (font, size, color) */
+  font-size: 14px;
+  font-weight: 400;
+  color: #6b7884;
+  line-height: 1.5;
+  margin-bottom: 0;
+  /* view uses mb-0 so keep spacing consistent */
+}
+
+/* Tabs link styling to match header photo (font and color) */
+.imoveis-tab-link {
+  font-family: inherit;
+  font-weight: 700;
+  /* same boldness as header */
+  color: #14284B !important;
+  /* force header blue */
+  font-size: 15px;
+  text-transform: none;
+}
+
+.imoveis-tab-link i {
+  color: #14284B;
+}
+
+/* Make Contracts and Imóveis headers occupy the same horizontal space
+   and have identical side padding so titles align across pages. */
+.contracts-header,
+.imoveis-header {
+  max-width: 920px;
+  /* same content width used elsewhere */
+  width: 100%;
+  /* left-align headers inside the content area so titles start at the same X */
+  margin: 0 0 1rem 0;
+  /* top/right/bottom/left */
+  padding: 0 12px 0 0;
+  /* keep a small right gutter, remove centering */
+}
+
+/* Ensure internal header rows use full width of that container */
+.contracts-header>.d-flex,
+.imoveis-header>.d-flex {
+  width: 100%;
+}
+
+.auth-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0px 8px 24px 0px rgba(20, 40, 75, 0.08);
+  border: 1px solid #EEF4FF;
+}
+
+.auth-card--small {
+  padding: 20px;
+  max-width: 520px;
+}
+
+.auth-card .card-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #14284B;
+  margin-bottom: 8px;
+}
+
+.auth-card .small-muted {
+  font-size: 14px;
+  color: #516578;
+}
+
+.form-control {
+  font-size: 16px;
+  padding: 12px 16px;
+  border: 1px solid #EEF4FF;
+  border-radius: 12px;
+  color: #14284B;
+  height: 48px;
+}
+
+.form-control::placeholder {
+  color: #84919E;
+}
+
+.form-control:focus {
+  border-color: #EEF4FF;
+  box-shadow: none;
+  outline: none;
+}
+
+.input-group-text {
+  background: transparent;
+  border: 1px solid #EEF4FF;
+  border-right: 0;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  padding: 12px 16px;
+  color: #84919E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.input-group-text svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  display: block;
+}
+
+.input-group .form-control {
+  border-left: 0;
+  padding-left: 16px;
+  /* restore left padding when no icon present */
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.btn {
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 12px;
+  padding: 12px 24px;
+  height: 48px;
+  transition: all 0.2s;
+}
+
+/* Footer-like action buttons used in many forms (Cancelar + Cadastrar) */
+.app-footer-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.app-btn {
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 10px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 18px;
+  box-shadow: none;
+}
+
+.app-btn:focus,
+.app-btn:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.app-btn-cancel {
+  background: #ffffff;
+  border: 1px solid #E6E6E6;
+  color: #111827;
+}
+
+.app-btn-submit {
+  background: #2273FF;
+  border: none;
+  color: #ffffff;
+}
+
+/* Contract-style action buttons used across contract create pages */
+
+.contract-action-buttons {
+  display: flex;
+  gap: 12px;
+  /* spacing between buttons matches mock */
+}
+
+.contract-btn {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 12px;
+  /* slightly more rounded to match image */
+  height: 48px;
+  /* match primary app button height */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.contract-btn-cancel {
+  background: #ffffff;
+  border: 1px solid #EEF4FF;
+  /* very subtle border like the mock */
+  color: #111827;
+}
+
+.contract-btn-cancel:hover,
+.contract-btn-cancel:focus {
+  background: #ffffff !important;
+  border-color: #EEF4FF !important;
+  color: #111827 !important;
+  box-shadow: none !important;
+}
+
+.app-btn-cancel:hover,
+.app-btn-cancel:focus {
+  background: #ffffff !important;
+  border-color: #E6E6E6 !important;
+  color: #111827 !important;
+  box-shadow: none !important;
+}
+
+.contract-btn-submit {
+  background: #2563eb;
+  /* blue matching existing contract pages */
+  border: none;
+  color: #ffffff;
+}
+
+.contract-btn:focus,
+.contract-btn:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.btn-purple {
+  font-size: 15px;
+  padding: 10px 14px;
+  border: 1px solid #EEF4FF;
+  border-radius: 10px;
+  color: #14284B;
+  height: 44px;
+}
+
+.btn-outline-secondary {
+  border: 1px solid #EEF4FF;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 10px 18px;
+  height: 40px;
+  transition: all 0.18s ease;
+}
+
+/* Remove gray hover/active animation for 'Voltar' outline buttons */
+.btn-outline-secondary,
+.btn-outline-secondary:hover,
+.btn-outline-secondary:focus,
+.btn-outline-secondary:active {
+  background: transparent !important;
+  color: inherit !important;
+  box-shadow: none !important;
+  transition: none !important;
+}
+
+/* Ensure no outline or black border appears on focus/hover for outline buttons */
+.btn-outline-secondary:focus,
+.btn-outline-secondary:hover {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: #EEF4FF !important;
+  background: transparent !important;
+}
+
+.form-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #516578;
+  margin-bottom: 8px;
+  text-align: left !important;
+  display: block;
+  width: 100%;
+}
+
+.grid {
+  display: grid;
+}
+
+.grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+.space-y-2>*+* {
+  margin-top: 0.5rem;
+}
+
+.space-y-3>*+* {
+  margin-top: 0.75rem;
+}
+
+.space-y-4>*+* {
+  margin-top: 1rem;
+}
+
+.pt-4 {
+  padding-top: 1rem;
+}
+
+.link-purple {
+  color: #9333EA;
+}
+
+.link-purple:hover {
+  color: #7C1FDF;
+}
+
+.text-gray-400 {
+  color: #94A3B8;
+}
+
+.text-gray-500 {
+  color: #64748B;
+}
+
+.text-gray-600 {
+  color: #475569;
+}
+
+.mb-8 {
+  margin-bottom: 2rem;
+}
+
+.select-card {
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid #eef2f6;
+}
+
+.select-card:hover {
+  box-shadow: 0 6px 20px rgba(18, 38, 63, 0.06);
+  text-decoration: none;
+}
+
+.management-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #eef4ff;
+  transition: box-shadow .15s ease, transform .15s ease;
+}
+
+.management-card:hover {
+  box-shadow: 0 10px 30px rgba(11, 34, 85, 0.06);
+  transform: translateY(-3px);
+}
+
+.mg-header {
+  background: linear-gradient(90deg, #0B66FF 0%, #0A4ED9 100%);
+  color: #fff;
+  padding: 28px 0;
+}
+
+.mg-header .mg-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.mg-user img {
+  object-fit: cover;
+}
+
+.summary-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #eef4ff;
+  box-shadow: 0 4px 18px rgba(11, 34, 85, 0.04);
+}
+
+.management-dashboard .card {
+  border-radius: 12px;
+  box-shadow: 0 4px 18px rgba(11, 34, 85, 0.04);
+}
+
+.mg-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 220px;
+  height: 100vh;
+  background: #ffffff;
+  border-right: 1px solid #EEF4FF;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.mg-sidebar>div {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+/* Sidebar header: smaller, centered logo and text */
+.mg-sidebar .sidebar-header {
+  text-align: center;
+  padding-top: 20px;
+  padding-bottom: 8px;
+}
+
+.mg-sidebar .sidebar-header .logo-inline,
+.sidebar-top .logo-inline {
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+}
+
+.mg-sidebar .sidebar-header .header-icon svg {
+  width: 20px;
+  height: 20px;
+  stroke: #FFFFFF;
+  /* white icon stroke on blue background */
+  fill: none;
+}
+
+.mg-sidebar .sidebar-header h4 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 8px 0 0 0;
+  color: #14284B;
+}
+
+.header-icon {
+  background: #0B66FF;
+  padding: 8px;
+  border-radius: 12px;
+}
+
+.header-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Smaller variant used inside the sidebar header */
+.sidebar-header-icon {
+  width: 40px;
+  height: 40px;
+  padding: 6px;
+  border-radius: 14px;
+}
+
+.sidebar-header .app-title,
+.sidebar-header h4,
+.sidebar-top h2 {
+  margin: 0;
+  font-weight: 700;
+  color: #14284B;
+}
+
+.sidebar-divider {
+  height: 1px;
+  background-color: #E2E8F0;
+  width: 100%;
+  margin: 0;
+  opacity: 1;
+}
+
+.content-wrapper {
+  margin-left: 250px;
+  width: calc(100% - 250px);
+}
+
+.badge {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 12px;
+}
+
+.badge.bg-success {
+  background-color: #00B74A !important;
+}
+
+.user-info {
+  font-size: 14px;
+}
+
+.user-info .fw-medium {
+  color: #1E293B;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Make sidebar menu grow so footer (logout) stays pinned to bottom */
+.mg-sidebar .sidebar-menu {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding-top: 8px;
+}
+
+.sidebar-footer {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  color: #475569;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.menu-item i {
+  font-size: 20px;
+  color: #64748B;
+}
+
+.menu-item span {
+  font-size: 14px;
+}
+
+/* Sidebar typography to match the screenshot: larger, bolder, and matching app font */
+/* Sidebar menu (selectors matching Views/Shared/_Sidebar.cshtml) */
+.sidebar-menu a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px 10px 20px;
+  color: #516578;
+  /* lighter gray */
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 14px;
+  /* smaller */
+  font-weight: 500;
+  /* slightly lighter */
+  font-family: inherit;
+}
+
+.sidebar-menu a i {
+  color: #94A3B8;
+  /* subtle/light icon color */
+  font-size: 18px;
+}
+
+.sidebar-menu li+li a {
+  margin-top: 4px;
+}
+
+/* Active link (in markup the active class is placed on the anchor) */
+.sidebar-menu a.active,
+.sidebar-menu a.active:focus,
+.sidebar-menu a.active:hover {
+  background: #F0F7FF;
+  color: #0B66FF;
+}
+
+.sidebar-menu a.active i {
+  color: #0B66FF;
+}
+
+.menu-item:hover {
+  background: #F1F5F9;
+  color: #0F172A;
+  text-decoration: none;
+}
+
+.menu-item.active {
+  background: #F0F7FF;
+  color: #0B66FF;
+}
+
+.menu-item.active i {
+  color: #0B66FF;
+}
+
+.menu-item.text-danger {
+  color: #DC2626;
+}
+
+.menu-item.text-danger i {
+  color: #DC2626;
+}
+
+.menu-item.text-danger:hover {
+  background: #FEF2F2;
+}
+
+/* Centraliza o botão de logout quando usado na sidebar genérica (.mg-sidebar) */
+.mg-sidebar .menu-item.text-danger {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 12px 0;
+  /* remove o padding lateral para centralizar melhor */
+  gap: 8px;
+  width: 100%;
+}
+
+.mg-sidebar .menu-item.text-danger i {
+  margin: 0;
+}
+
+.mg-sidebar .menu-item.text-danger span {
+  margin: 0;
+}
+
+/* Ensure logout button (footer) is fully centered and its text is centered inside */
+.sidebar-footer .menu-item.text-danger {
+  display: flex;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 12px 0 !important;
+  gap: 0 !important;
+  width: 100%;
+}
+
+.sidebar-footer .menu-item.text-danger span {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+}
+
+.content-wrapper {
+  margin-left: 220px;
+  width: calc(100% - 220px);
+  min-height: 100vh;
+  background: #F8FAFC;
+  transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+.stat-card {
+  border-radius: 14px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #EEF4FF;
+}
+
+.stat-card .card-body {
+  padding: 18px;
+  display: flex;
+  align-items: center;
+}
+
+.stat-icon {
+  width: 56px;
+  height: 56px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-size: 20px;
+}
+
+.stat-icon i {
+  font-size: 22px;
+}
+
+.stat-card .text-muted.small {
+  opacity: 0.85;
+}
+
+.stat-card .h4 {
+  font-weight: 700;
+}
+
+.search-separate {
+  max-width: 920px;
+}
+
+.search-separate .input-group-text {
+  background: #ffffff;
+  border: 1px solid #EEF4FF;
+  border-right: 0;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  padding: 10px 14px;
+  color: #94A3B8;
+}
+
+.search-separate .form-control {
+  background: #ffffff;
+  border: 1px solid #EEF4FF;
+  border-left: 0;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+  padding: 12px 16px;
+  box-shadow: 0 6px 20px rgba(11, 34, 85, 0.04);
+  height: 48px;
+}
+
+.search-separate .form-control::placeholder {
+  color: #9AA4B2;
+}
+
+.search-separate .form-control:focus {
+  box-shadow: 0 8px 28px rgba(11, 34, 85, 0.06);
+  outline: none;
+}
+
+@media (max-width: 991px) {
+  .mg-sidebar {
+    position: fixed;
+    width: 220px;
+    z-index: 1000;
+  }
+
+  .content-wrapper {
+    margin-left: 220px;
+    width: calc(100% - 220px);
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+}
+
+.app-subtitle {
+  color: #6c757d;
+}
+
+.bg-purple {
+  background: #f0e7ff !important;
+}
+
+.quick-access {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.role-btn {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.role-btn.morador {
+  background: transparent;
+  color: #26a65b;
+  border-color: rgba(38, 166, 91, 0.15);
+}
+
+.role-btn.sindico {
+  background: transparent;
+  color: #7b61ff;
+  border-color: rgba(123, 97, 255, 0.15);
+}
+
+.role-btn.gestor {
+  background: #00b74a;
+  color: #fff;
+}
+
+.select-card.v2 {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  padding: 28px;
+}
+
+.select-card .card-body {
+  flex: 1 1 auto;
+}
+
+.select-card .card-footer {
+  margin-top: 12px;
+}
+
+.auth-card .small-muted {
+  color: #9aa4b2;
+}
+
+.register-grid {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 24px;
+  max-width: 1140px;
+  margin: 0 auto 32px;
+}
+
+.register-card {
+  background: #ffffff;
+  border: 1px solid #E5E7EB;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+  height: 360px;
+  box-sizing: border-box;
+  align-items: center;
+  text-align: center;
+  transition: all 0.2s ease;
+  border-radius: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.register-card:hover {
+  background: #F8FAFC;
+  border-color: #D1D5DB;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.register-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.register-card-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.register-card-icon.bg-blue-light {
+  background: #E6FFFA;
+}
+
+.register-card-icon.bg-purple-light {
+  background: #F5F3FF;
+}
+
+.register-card-icon.bg-green-light {
+  background: #ECFDF5;
+}
+
+.register-card-icon .text-blue {
+  color: #0EA5A4;
+}
+
+.register-card-icon .text-purple {
+  color: #7C3AED;
+}
+
+.register-card-icon .text-green {
+  color: #059669;
+}
+
+.btn-blue {
+  background-color: #0EA5A4;
+  color: #ffffff;
+}
+
+.btn-purple {
+  background-color: #7C3AED;
+  color: #ffffff;
+}
+
+.btn-green {
+  background-color: #059669;
+  color: #ffffff;
+}
+
+.btn-blue:hover {
+  background-color: #0B8F82;
+}
+
+/* Keep text color white on hover/focus/active for btn-blue to match other buttons */
+.btn-blue,
+.btn-blue:hover,
+.btn-blue:focus,
+.btn-blue:active {
+  color: #ffffff !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.btn-purple:hover {
+  background-color: #6D28D9;
+}
+
+.btn-green:hover {
+  background-color: #047857;
+}
+
+.register-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.register-card-subtitle {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #4B5563;
+  margin-bottom: 24px;
+}
+
+.register-card-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+  color: #4B5563;
+  font-size: 14px;
+  width: 100%;
+  max-width: 240px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+  line-height: 1.5;
+}
+
+.register-card-features li {
+  position: relative;
+  padding-left: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.register-card-features li:last-child {
+  margin-bottom: 0;
+}
+
+.register-card-features li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: currentColor;
+}
+
+.register-card-footer {
+  width: 100%;
+  max-width: 240px;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.register-card-footer .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 44px;
+  padding: 0 16px;
+  font-size: 14px;
+  text-align: center;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.btn-purple {
+  background-color: #7C3AED;
+  color: #ffffff;
+  border: none;
+}
+
+.btn-purple:hover {
+  background-color: #6D28D9;
+  color: #ffffff;
+}
+
+.btn-green {
+  background-color: #059669;
+  color: #ffffff;
+  border: none;
+}
+
+.btn-green:hover {
+  background-color: #047857;
+  color: #ffffff;
+}
+
+.logo-icon.bg-purple-100 {
+  background-color: #F3E8FF;
+}
+
+.logo-icon.bg-green-100 {
+  background-color: #DCFCE7;
+}
+
+.logo-icon.bg-blue-100 {
+  background-color: #E6FFFA;
+  color: #0EA5A4;
+}
+
+.text-purple {
+  color: #7C3AED;
+}
+
+.text-green {
+  color: #059669;
+}
+
+.auth-container .small,
+.auth-container .small-muted,
+.auth-container .text-muted.small {
+  font-size: 14px;
+}
+
+.auth-container--wide {
+  max-width: 980px;
+}
+
+.auth-container .text-gray-500,
+.auth-container .text-gray-600,
+.auth-container .link-primary,
+.auth-container .mt-4 span,
+.auth-container .mt-4 a {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.btn-primary {
+  background: #0B66FF;
+  border: none;
+  color: #ffffff;
+}
+
+.btn-purple {
+  background: #9333EA;
+  border: none;
+  color: #ffffff;
+}
+
+.btn-success {
+  background: #00B74A;
+  border: none;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: #0957D9;
+}
+
+.btn-purple:hover {
+  background: #7C1FDF;
+}
+
+.btn-success:hover {
+  background: #009F41;
+}
+
+.header-icon {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+
+.header-icon svg {
+  width: 32px;
+  height: 32px;
+}
+
+.bg-primary {
+  background-color: #0B66FF;
+}
+
+.rounded-xl {
+  border-radius: 12px;
+}
+
+.text-white {
+  color: #ffffff;
+}
+
+@media (max-width: 1140px) {
+  .register-grid {
+    margin: 0 16px 32px;
+  }
+}
+
+@media (max-width: 991px) {
+  .register-grid {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .register-card {
+    width: 100%;
+    max-width: 480px;
+  }
+
+  /* When stacked vertically, keep all register cards with rounded corners
+     and consistent borders so both sides look the same. */
+  .register-card {
+    border-radius: 16px;
+    border-left: 1px solid #E5E7EB;
+    /* keep a subtle border on all sides */
+    border-top: 1px solid #E5E7EB;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 520px) {
+  .register-card {
+    padding: 24px;
+  }
+}
+
+.text-gray-600 {
+  color: #516578;
+}
+
+.link-primary {
+  color: #0B66FF;
+  text-decoration: none;
+}
+
+.link-primary:hover {
+  color: #0957D9;
+  text-decoration: underline;
+}
+
+.input-group {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  width: 100%;
+}
+
+.input-group-text {
+  background: transparent;
+  border: 1px solid #EEF4FF;
+  border-right: 0;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  padding: 12px 16px;
+  color: #94A3B8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+}
+
+.input-group-text svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  display: block;
+}
+
+/* Ajustes específicos para páginas de autenticação (cadastros)
+   - transforma o quadradinho dos ícones em um círculo menor e mais alinhado
+   - afeta apenas views que usam a classe .auth-page (RegisterMorador/Sindico/Gestor)
+*/
+.auth-page .input-group-text {
+  background: transparent;
+  border: 1px solid #EEF4FF;
+  border-right: 0;
+  border-radius: 9999px;
+  /* círculo */
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #94A3B8;
+}
+
+.auth-page .input-group-text svg {
+  width: 18px;
+  height: 18px;
+}
+
+.auth-page .input-group .form-control {
+  height: 44px;
+  padding-left: 12px;
+  border-left: none;
+}
+
+.input-group .form-control {
+  position: relative;
+  flex: 1 1 auto;
+  width: 1%;
+  min-width: 0;
+  border-left: none;
+}
+
+/* When input-group has no icon (no-icon), restore left border and rounded left corners */
+.input-group.no-icon .form-control {
+  border-left: 1px solid #EEF4FF;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  padding-left: 16px;
+  /* ensure spacing inside input */
+}
+
+.text-gray-400 {
+  color: #94A3B8 !important;
+}
+
+.content-wrapper.no-sidebar {
+  margin-left: 0;
+  width: 100%;
+}
+
+.content-wrapper.no-sidebar .auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 16px;
+}
+
+.auth-container {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Utility: center a small card vertically and horizontally in the remaining content area */
+.center-page {
+  display: flex;
+  align-items: center;
+  /* vertical center */
+  justify-content: center;
+  /* horizontal center */
+  min-height: calc(100vh - 120px);
+  /* leave room for header/top paddings */
+}
+
+/* Hide scrollbar only on pages wrapped with .no-scroll-page */
+.no-scroll-page {
+  height: 100vh;
+  /* ensure it fills viewport so we can hide overflow */
+  overflow: hidden;
+  /* hide scrollbar and prevent scrolling */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.no-scroll-page::-webkit-scrollbar {
+  display: none;
+  /* Safari and Chrome */
+}
+
+/* Financeiro (síndico) specific tweaks */
+.finance-summary-card {
+  border-radius: 12px;
+  border: 1px solid #EEF4FF;
+  background: #fff;
+  padding: 18px;
+  box-shadow: 0 6px 18px rgba(11, 34, 85, 0.04);
+}
+
+.finance-pills .nav-link {
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.finance-pills .nav-link.active {
+  background: #EEF7FF;
+  color: #0B66FF;
+}
+
+.finance-list-item {
+  border-radius: 12px;
+  border: 1px solid #F1F5F9;
+  padding: 12px;
+  background: #fff;
+  margin-bottom: 8px;
+}
+
+.finance-list-item .avatar-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #F8FAFC;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Figma-aligned color variables for finance area */
+:root {
+  --finance-blue: #1677FF;
+  /* primary QR button blue from mock */
+  --finance-orange: #FF7A00;
+  /* badge */
+  --finance-card-bg: #FFF6EE;
+  /* morador/sindico card background */
+  --finance-card-border: #F4D8B8;
+  /* card border */
+  --finance-discount-bg: #ECFDF5;
+  /* discount pale green */
+  --finance-discount-border: #D1F7E0;
+  /* discount border */
+  --finance-muted: #6b7280;
+}
+
+/* Morador card (large, rounded, orange accent) */
+.finance-morador-card {
+  background: var(--finance-card-bg);
+  border: 1px solid var(--finance-card-border);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(11, 34, 85, 0.04);
+}
+
+.finance-morador-card .finance-meta {
+  color: var(--finance-muted);
+  font-size: 0.95rem;
+}
+
+.finance-morador-card .finance-amount {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #14284B;
+}
+
+.finance-morador-badge {
+  background: var(--finance-orange);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.75rem;
+}
+
+/* QR button style used in finance views */
+.finance-qr-btn {
+  background: var(--finance-blue) !important;
+  border-color: var(--finance-blue) !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+  padding: 12px 16px !important;
+  font-size: 16px !important;
+  height: auto !important;
+}
+
+/* Sindico discount box */
+.finance-discount-box {
+  background: var(--finance-discount-bg);
+  border: 1px solid var(--finance-discount-border);
+  padding: 14px;
+  border-radius: 10px;
+  color: #064e3b;
+  /* dark green text */
+}
+
+/* Detailed payment card inner white box */
+.finance-detail-box {
+  background: #fff;
+  border: 1px solid #eee;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+/* Make finance tiles headings slightly larger and bolder to match Figma */
+.finance-summary-card .text-muted.small {
+  font-size: 0.85rem;
+}
+
+.finance-summary-card .fw-semibold {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+/* Small responsive tweaks for finance layout */
+@media (max-width: 768px) {
+  .finance-morador-card {
+    padding: 16px;
+  }
+
+  .finance-qr-btn {
+    font-size: 15px !important;
+  }
+}
+
+/* Contract info cards: match subtitle typography (same as image) */
+.main-content .card .card-body h6 {
+  /* Match visual from image: uppercase, bold, slightly larger and more spacing */
+  /* Ajuste para corresponder à imagem: cinza, menor que antes */
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.6px !important;
+  color: #6b7884 !important;
+  font-family: var(--app-font-family) !important;
+  margin: 0 !important;
+}
+
+.main-content .card .card-body p,
+.main-content .card .card-body div,
+.main-content .card .card-body span {
+  font-size: 14px !important;
+  color: #6b7884 !important;
+  font-family: var(--app-font-family) !important;
+  line-height: 1.5 !important;
+}
+
+/* Sidebar helpers for markup that uses .sidebar (not .mg-sidebar) so all
+   sections (logo, menu, user, logout) line up on the same X coordinate. */
+.sidebar {
+  box-sizing: border-box;
+  /* remove horizontal padding so contents can sit flush to the left edge */
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.sidebar .sidebar-logo {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.sidebar .sidebar-menu {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.sidebar .sidebar-menu a {
+  /* small left inset so icons/text align visually like the other example image */
+  padding: 10px 14px 10px 20px !important;
+  /* top right bottom left - padronizado */
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar .sidebar-user {
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: 0;
+}
+
+.sidebar-logout {
+  padding: 0 0 8px 0;
+  /* no extra left/right padding so contents align */
+}
+
+.sidebar-logout a {
+  /* give logout the same small left inset so it lines up with menu items */
+  padding: 10px 14px 10px 8px !important;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  /* keep "Sair" smaller as requested */
+  text-decoration: none;
+}
+
+/* ensure icons do not add extra left spacing */
+.sidebar .sidebar-menu a i,
+.sidebar-logout a i {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+  /* remove any left padding so icon sits at the very edge */
+}
+
+/* Ensure no residual indentation on list items or the logout container */
+.sidebar .sidebar-menu,
+.sidebar-logout {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+.sidebar-logout a i {
+  font-size: 18px;
+  /* match menu icons */
+}
+
+.sidebar-logout a:hover {
+  background: #FEF2F2;
+}
+
+/* Sidebar layout helpers to replace inline styles in _Sidebar.cshtml */
+.sidebar .sidebar-logo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  /* align contents to the left */
+  gap: 10px;
+  padding: 6px 8px 6px 20px;
+  /* top right bottom left — adicionar mesmo recuo à esquerda das informações */
+}
+
+.sidebar .sidebar-logo .logo-box {
+  background: #0B66FF;
+  border-radius: 12px;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+}
+
+.sidebar .sidebar-logo .logo-box svg {
+  width: 20px;
+  height: 20px;
+}
+
+.sidebar .sidebar-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #14284B;
+}
+
+.sidebar .sidebar-user {
+  background: #ffffff;
+  border-radius: 12px;
+  /* adicionar pequeno espaçamento antes do círculo do avatar */
+  padding: 6px 8px 6px 20px;
+  /* top right bottom left - padronizado */
+  margin: 4px 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: auto;
+}
+
+.sidebar .sidebar-avatar {
+  background: #e3e7fd;
+  color: #2563eb;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  /* aproximar o texto do avatar */
+  margin-right: 8px;
+}
+
+.sidebar .sidebar-username {
+  white-space: nowrap;
+  /* igual ao tamanho dos itens do menu */
+  font-size: 14px;
+  font-weight: 500;
+  /* combinar com .sidebar-menu a (font-weight:500) */
+}
+
+.sidebar .sidebar-role {
+  font-size: 11px;
+  border-radius: 8px;
+  padding: 3px 8px;
+  margin-top: 4px;
+  display: inline-block;
+  color: #fff;
+}
+
+/* Reduce only the logout text size so "Sair" appears smaller while keeping the
+   icon the same size and the button aligned with other menu items. */
+.sidebar-logout a {
+  font-size: 13px;
+  /* slightly smaller than menu text */
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px 10px 20px;
+  /* match sidebar item padding - padronizado */
+  text-decoration: none;
+}
+
+.sidebar-logout a i {
+  font-size: 18px;
+  /* keep icon size consistent with other menu icons */
+}

@@ -1,0 +1,420 @@
+@using CondoHub.Models.Entities
+@model IEnumerable<CondoHub.Models.Entities.Contract>
+@{
+    ViewData["Title"] = "Contratos e Pessoas";
+    var activeTab = ViewBag.ActiveTab ?? "contracts";
+    int totalContratos = Model.Count(c => c.Type == ContractType.LocatarioProprietario);
+    int totalCondominos = Model.Count(c => c.Type == ContractType.Condomino);
+    int totalFuncionarios = Model.Count(c => c.Type == ContractType.Funcionario);
+}
+
+@if (User?.Identity != null && User.Identity.IsAuthenticated)
+{
+    <partial name="_Sidebar" />
+}
+
+<link rel="stylesheet" href="~/css/imoveis.css" />
+
+<div class="main-content">
+    <div class="container-fluid py-4">
+        <div class="imoveis-header text-center" style="max-width: 920px; margin: 0 auto; padding: 0 12px;">
+            <div class="mb-3">
+                <h1 class="app-title">Gestão de Contratos e Pessoas</h1>
+                <p class="app-subtitle mb-0">Cadastro e controle de contratos, condôminos e funcionários</p>
+            </div>
+
+            <div style="display: flex; justify-content: center; margin-bottom: 30px;">
+                <div style="display: flex; gap: 15px; background: #f5f5f5; padding: 8px; border-radius: 20px;">
+                    <a href="@Url.Action("Index", new { tab = "contracts" })" class="imoveis-tab-link"
+                        style="padding: 10px 20px; border-radius: 16px; text-decoration: none; color: #333; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; transition: all 0.3s; background: @(activeTab == "contracts" ? "#ffffff" : "transparent"); box-shadow: @(activeTab == "contracts" ? "0 2px 8px rgba(0,0,0,0.1)" : "none");">
+                        <i class="bi bi-file-earmark-text"></i>
+                        <span>Contratos</span>
+                    </a>
+                    <a href="@Url.Action("Index", new { tab = "residents" })" class="imoveis-tab-link"
+                        style="padding: 10px 20px; border-radius: 16px; text-decoration: none; color: #333; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; transition: all 0.3s; background: @(activeTab == "residents" ? "#ffffff" : "transparent"); box-shadow: @(activeTab == "residents" ? "0 2px 8px rgba(0,0,0,0.1)" : "none");">
+                        <i class="bi bi-people"></i>
+                        <span>Condôminos</span>
+                    </a>
+                    <a href="@Url.Action("Index", new { tab = "employees" })" class="imoveis-tab-link"
+                        style="padding: 10px 20px; border-radius: 16px; text-decoration: none; color: #333; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; transition: all 0.3s; background: @(activeTab == "employees" ? "#ffffff" : "transparent"); box-shadow: @(activeTab == "employees" ? "0 2px 8px rgba(0,0,0,0.1)" : "none");">
+                        <i class="bi bi-person-badge"></i>
+                        <span>Funcionários</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="d-flex flex-column gap-3 align-items-center mb-3" style="justify-content: center; max-width: 920px; margin: 0 auto; padding: 0 12px;">
+                <div class="d-flex gap-3 align-items-center" style="width: 100%; justify-content: center;">
+                    <input id="searchInput" type="text" class="form-control ps-3 search-input"
+                        placeholder="Buscar por contratos..." style="width: 400px;">
+
+                    @if (activeTab == "contracts")
+                    {
+                        <a href="@Url.Action("CreateLocatario")" class="btn btn-primary d-inline-flex align-items-center"
+                            style="flex: 0 0 auto; white-space: nowrap;">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                aria-hidden="true" class="me-2">
+                                <path d="M8 1v14M1 8h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                            </svg>
+                            Novo Contrato
+                        </a>
+                    }
+                    @if (activeTab == "residents")
+                    {
+                        <a href="@Url.Action("CreateCondomino")" class="btn btn-primary d-inline-flex align-items-center"
+                            style="flex: 0 0 auto; white-space: nowrap;">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                aria-hidden="true" class="me-2">
+                                <path d="M8 1v14M1 8h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                            </svg>
+                            Novo Condômino
+                        </a>
+                    }
+                    @if (activeTab == "employees")
+                    {
+                        <a href="@Url.Action("CreateFuncionario")" class="btn btn-primary d-inline-flex align-items-center"
+                            style="flex: 0 0 auto; white-space: nowrap;">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                aria-hidden="true" class="me-2">
+                                <path d="M8 1v14M1 8h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                            </svg>
+                            Novo Funcionário
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+
+        @if (activeTab == "contracts")
+        {
+            @if (Model.Where(c => c.Type == ContractType.LocatarioProprietario).Any())
+            {
+                <div class="row g-3">
+                    @foreach (var contract in Model.Where(c => c.Type == ContractType.LocatarioProprietario))
+                    {
+                        <div class="col-12">
+                            <div class="card" style="border: none; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                                <div class="card-body p-4">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <div style="display:flex; align-items:center; gap:16px; flex:1; padding-left:0;">
+                                            <div
+                                                style="width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; background:#FAF7FF; flex-shrink:0;">
+                                                <!-- small document icon -->
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg" class="text-primary">
+                                                    <path
+                                                        d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z"
+                                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path d="M14 2V8H20" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round" />
+                                                    <path d="M8 13H16M8 17H12" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" />
+                                                    <path d="M7 10C7.5 9.5 9 9 10 10" stroke="currentColor" stroke-width="1.5"
+                                                        stroke-linecap="round" />
+                                                </svg>
+                                            </div>
+                                            <div style="flex:1;">
+                                                <h6 class="mb-1"
+                                                    style="font-weight: 600; color: #1a1a1a; margin: 0; padding: 0; text-align: left;">
+                                                    @contract.Nome</h6>
+                                                <div
+                                                    style="text-align: left; font-size: 13px; color: #666; line-height: 1.4; margin-left: 0;">
+                                                    <p style="margin:0; padding:0;">
+                                                        @if (!string.IsNullOrEmpty(contract.LocatarioNome))
+                                                        {
+                                                            <span>Locatário: <strong>@contract.LocatarioNome</strong></span>
+                                                        }
+                                                        @if (!string.IsNullOrEmpty(contract.ProprietarioNome))
+                                                        {
+                                                            <span class="ms-2">•</span>
+                                                            <span class="ms-2">Proprietário:
+                                                                <strong>@contract.ProprietarioNome</strong></span>
+                                                        }
+                                                    </p>
+                                                    <p style="margin:0; padding:0;">
+                                                        @if (contract.DataInicio.HasValue)
+                                                        {
+                                                            <span>@contract.DataInicio.Value.ToString("dd/MM/yyyy")</span>
+                                                            @if (contract.DataFim.HasValue)
+                                                            {
+                                                                <span> até @contract.DataFim.Value.ToString("dd/MM/yyyy")</span>
+                                                            }
+                                                            <span class="ms-2">•</span>
+                                                        }
+
+                                                        @if (contract.ValorMensal.HasValue)
+                                                        {
+                                                            <span class="ms-2">R$ @contract.ValorMensal.Value.ToString("N2")/mês</span>
+                                                        }
+
+                                                        @* Mostrar imóvel vinculado depois do valor mensal *@
+                                                        @if (contract.PropertyId.HasValue && ViewBag.ContractPropertyMap is
+                                                                                                    System.Collections.Generic.Dictionary<int, string> __map &&
+                                                                                                    __map.ContainsKey(contract.PropertyId.Value))
+                                                        {
+                                                            <span class="ms-2">•</span>
+                                                            <span class="ms-2">@__map[contract.PropertyId.Value]</span>
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="flex-shrink: 0; margin-left: 16px; display:flex; gap:8px; align-items:center;">
+                                            <a href="@Url.Action("Edit", new { id = contract.Id })"
+                                                class="btn btn-sm btn-outline-secondary"
+                                                style="border-radius: 8px; font-size: 13px; white-space: nowrap;">
+                                                Editar
+                                            </a>
+                                            <form asp-action="Delete" asp-controller="Contracts" method="post"
+                                                style="display:inline; margin:0;">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@contract.Id" />
+                                                <button type="submit" class="btn btn-sm btn-outline-secondary"
+                                                    style="border-radius: 8px; font-size: 13px; white-space: nowrap;"
+                                                    onclick="return confirm('Deseja excluir este contrato?');">
+                                                    Excluir
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-muted text-center py-5">Nenhum contrato cadastrado</p>
+            }
+        }
+
+        @if (activeTab == "residents")
+        {
+            @if (Model.Where(c => c.Type == ContractType.Condomino).Any())
+            {
+                <div class="row g-3" style="max-width: 920px; margin: 0 auto; padding: 0 12px;">
+                    @foreach (var contract in Model.Where(c => c.Type == ContractType.Condomino))
+                    {
+                        <div class="col-12">
+                            <div class="card" style="border: none; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                                <div class="card-body p-4">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <div style="display:flex; align-items:center; gap:16px; flex:1; padding-left:0;">
+                                            <div
+                                                style="width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; background:#FAF7FF; flex-shrink:0;">
+                                                <!-- small document icon -->
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg" class="text-primary">
+                                                    <path
+                                                        d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z"
+                                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path d="M14 2V8H20" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round" />
+                                                    <path d="M8 13H16M8 17H12" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" />
+                                                    <path d="M7 10C7.5 9.5 9 9 10 10" stroke="currentColor" stroke-width="1.5"
+                                                        stroke-linecap="round" />
+                                                </svg>
+                                            </div>
+                                            <div style="flex:1;">
+                                                <h6 class="mb-1"
+                                                    style="font-weight: 600; color: #1a1a1a; margin: 0; padding: 0; text-align: left;">
+                                                    @contract.Nome</h6>
+                                                <div
+                                                    style="text-align: left; font-size: 13px; color: #666; line-height: 1.4; margin-left: 0;">
+                                                    <p
+                                                        style="margin:0; padding:0; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                                                        @* *@
+                                                        @if (!string.IsNullOrEmpty(contract.Unidade))
+                                                        {
+                                                            <span>@contract.Unidade</span>
+                                                        }
+
+                                                        @if (!string.IsNullOrEmpty(contract.Telefone))
+                                                        {
+                                                            @if (!string.IsNullOrEmpty(contract.Unidade))
+                                                            {
+                                                                <span class="ms-2">•</span>
+                                                            }
+                                                            <span class="ms-2">@contract.Telefone</span>
+                                                        }
+
+                                                        @if (!string.IsNullOrEmpty(contract.Email))
+                                                        {
+                                                            @if (!string.IsNullOrEmpty(contract.Unidade) ||
+                                                                                                        !string.IsNullOrEmpty(contract.Telefone))
+                                                            {
+                                                                <span class="ms-2">•</span>
+                                                            }
+                                                            <span class="ms-2">@contract.Email</span>
+                                                            @* Exibir o imóvel (se existir) ao lado do email *@
+                                                            @if (contract.PropertyId.HasValue && ViewBag.ContractPropertyMap is
+                                                                                                        System.Collections.Generic.Dictionary<int, string> map &&
+                                                                                                        map.ContainsKey(contract.PropertyId.Value))
+                                                            {
+                                                                <span class="ms-2">•</span>
+                                                                <span class="ms-2">@map[contract.PropertyId.Value]</span>
+                                                            }
+                                                            @* *@
+                                                            @if (!string.IsNullOrEmpty(contract.TipoCondomino))
+                                                            {
+                                                                <span class="ms-2">•</span>
+                                                                <span class="ms-2">@contract.TipoCondomino</span>
+                                                            }
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="flex-shrink: 0; margin-left: 16px; display:flex; gap:8px; align-items:center;">
+                                            <a href="@Url.Action("Edit", new { id = contract.Id })"
+                                                class="btn btn-sm btn-outline-secondary"
+                                                style="border-radius: 8px; font-size: 13px; white-space: nowrap;">
+                                                Editar
+                                            </a>
+                                            <form asp-action="Delete" asp-controller="Contracts" method="post"
+                                                style="display:inline; margin:0;">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@contract.Id" />
+                                                <button type="submit" class="btn btn-sm btn-outline-secondary"
+                                                    style="border-radius: 8px; font-size: 13px; white-space: nowrap;"
+                                                    onclick="return confirm('Deseja excluir este contrato?');">
+                                                    Excluir
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-muted text-center py-5">Nenhum condômino cadastrado</p>
+            }
+        }
+
+        @if (activeTab == "employees")
+        {
+            @if (Model.Where(c => c.Type == ContractType.Funcionario).Any())
+            {
+                <div class="row g-3" style="max-width: 920px; margin: 0 auto; padding: 0 12px;">
+                    @foreach (var contract in Model.Where(c => c.Type == ContractType.Funcionario))
+                    {
+                        <div class="col-12">
+                            <div class="card" style="border: none; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                                <div class="card-body p-4">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <div style="display:flex; align-items:center; gap:16px; flex:1; padding-left:0;">
+                                            <div
+                                                style="width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; background:#FAF7FF; flex-shrink:0;">
+                                                <!-- small document icon -->
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg" class="text-primary">
+                                                    <path
+                                                        d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z"
+                                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path d="M14 2V8H20" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round" />
+                                                    <path d="M8 13H16M8 17H12" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" />
+                                                    <path d="M7 10C7.5 9.5 9 9 10 10" stroke="currentColor" stroke-width="1.5"
+                                                        stroke-linecap="round" />
+                                                </svg>
+                                            </div>
+                                            <div style="flex:1;">
+                                                <h6 class="mb-1"
+                                                    style="font-weight: 600; color: #1a1a1a; margin: 0; padding: 0; text-align: left;">
+                                                    @contract.Nome</h6>
+                                                <div
+                                                    style="text-align: left; font-size: 13px; color: #666; line-height: 1.4; margin-left: 0;">
+                                                    <p
+                                                        style="margin:0; padding:0; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                                                        @* *@
+                                                        @if (!string.IsNullOrEmpty(contract.Cargo))
+                                                        {
+                                                            <span>@contract.Cargo</span>
+                                                        }
+
+                                                        @if (!string.IsNullOrEmpty(contract.Turno))
+                                                        {
+                                                            @if (!string.IsNullOrEmpty(contract.Cargo))
+                                                            {
+                                                                <span class="ms-2">•</span>
+                                                                <span class="ms-2">Turno: @contract.Turno</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span>Turno: @contract.Turno</span>
+                                                            }
+                                                        }
+
+                                                        @if (contract.DataAdmissao.HasValue)
+                                                        {
+                                                            @if (!string.IsNullOrEmpty(contract.Cargo) ||
+                                                                                                        !string.IsNullOrEmpty(contract.Turno))
+                                                            {
+                                                                <span class="ms-2">•</span>
+                                                            }
+                                                            <span class="ms-2">Desde
+                                                                @contract.DataAdmissao.Value.ToString("dd/MM/yyyy")</span>
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="flex-shrink: 0; margin-left: 16px; display:flex; gap:8px; align-items:center;">
+                                            <a href="@Url.Action("Edit", new { id = contract.Id })"
+                                                class="btn btn-sm btn-outline-secondary"
+                                                style="border-radius: 8px; font-size: 13px; white-space: nowrap;">
+                                                Editar
+                                            </a>
+                                            <form asp-action="Delete" asp-controller="Contracts" method="post"
+                                                style="display:inline; margin:0;">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@contract.Id" />
+                                                <button type="submit" class="btn btn-sm btn-outline-secondary"
+                                                    style="border-radius: 8px; font-size: 13px; white-space: nowrap;"
+                                                    onclick="return confirm('Deseja excluir este contrato?');">
+                                                    Excluir
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-muted text-center py-5">Nenhum funcionário cadastrado</p>
+            }
+        }
+    </div>
+
+    @section Scripts {
+        <script>
+            $(document).ready(function () {
+                function refreshList() {
+                    var searchTerm = $('#searchInput').val();
+                    var currentTab = '@activeTab';
+                    window.location.href = '@Url.Action("Index", "Contracts")?searchString=' + encodeURIComponent(searchTerm) + '&tab=' + currentTab;
+                }
+
+                var searchTimeout;
+                $('#searchInput').on('keyup', function () {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(refreshList, 500);
+                });
+            });
+        </script>
+    }
+</div>

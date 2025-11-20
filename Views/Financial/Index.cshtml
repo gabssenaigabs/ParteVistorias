@@ -1,0 +1,18 @@
+@model CondoHub.Models.Entities.Payment
+@{
+    ViewData["Title"] = "Financeiro";
+}
+
+@if (User?.Identity != null && User.Identity.IsAuthenticated)
+{
+    <partial name="_Sidebar" />
+}
+
+<div class="main-content">
+    @{
+        var isSindico = User.IsInRole("SINDICO");
+        var viewName = isSindico ? "Sindico" : "Morador";
+    }
+
+    @await Html.PartialAsync(viewName, Model)
+</div>

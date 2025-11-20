@@ -1,0 +1,98 @@
+@using CondoHub.Models.Entities
+@model Contract
+@{
+    ViewData["Title"] = "Novo Contrato - Locatário/Proprietário";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="mb-4">
+                <h3 class="app-title">Novo Contrato</h3>
+                <p class="app-subtitle mb-0">Preencha os dados do contrato de locação</p>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <form asp-action="CreateLocatario" method="post">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label fw-500">Locatário</label>
+                                    <input asp-for="LocatarioNome" type="text" class="form-control"
+                                        placeholder="Nome do locatário" />
+                                    <span asp-validation-for="LocatarioNome" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label fw-500">Proprietário</label>
+                                    <input asp-for="ProprietarioNome" type="text" class="form-control"
+                                        placeholder="Nome do proprietário" />
+                                    <span asp-validation-for="ProprietarioNome" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group mb-3">
+                                    <label class="form-label fw-500">Imóvel</label>
+                                    <select asp-for="PropertyId" class="form-control" asp-items="ViewBag.PropertyList">
+                                        <option value="">Selecione...</option>
+                                    </select>
+                                    <span asp-validation-for="Property" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group mb-3">
+                                    <label class="form-label fw-500">Valor Mensal (R$)</label>
+                                    <input asp-for="ValorMensal" type="number" step="0.01" class="form-control"
+                                        placeholder="0,00" />
+                                    <span asp-validation-for="ValorMensal" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label fw-500">Data Início</label>
+                                    <input asp-for="DataInicio" type="date" class="form-control" />
+                                    <span asp-validation-for="DataInicio" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label fw-500">Data Fim</label>
+                                    <input asp-for="DataFim" type="date" class="form-control" />
+                                    <span asp-validation-for="DataFim" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="mt-4 contract-action-buttons">
+                            <a href="@Url.Action("Index", new { tab = "contracts" })"
+                                class="contract-btn contract-btn-cancel">
+                                Cancelar
+                            </a>
+                            <button type="submit" class="contract-btn contract-btn-submit">
+                                Cadastrar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

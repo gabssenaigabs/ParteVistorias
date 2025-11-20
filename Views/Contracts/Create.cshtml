@@ -1,0 +1,264 @@
+@using CondoHub.Models.Entities
+@model Contract
+@{
+    ViewData["Title"] = "Novo Contrato";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="mb-4">
+                <h3 class="app-title">Novo Contrato</h3>
+                <p class="app-subtitle mb-0">Preencha os dados para cadastrar um novo contrato</p>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <form asp-action="Create" method="post">
+                        <div class="form-group mb-3">
+                            <label class="form-label fw-500">Tipo de Contrato</label>
+                            <select asp-for="Type" class="form-select">
+                                <option value="">Selecione...</option>
+                                <option value="1">Locatário/Proprietário</option>
+                                <option value="2">Condômino</option>
+                                <option value="3">Funcionário</option>
+                            </select>
+                            <span asp-validation-for="Type" class="text-danger small"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="form-label fw-500">Nome Completo</label>
+                            <input asp-for="Nome" type="text" class="form-control" placeholder="Digite o nome..."
+                                required />
+                            <span asp-validation-for="Nome" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label fw-500">Imóvel</label>
+                                    <input asp-for="Property" type="text" class="form-control"
+                                        placeholder="Ex: Apto 101" />
+                                    <span asp-validation-for="Property" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label fw-500">Unidade</label>
+                                    <input asp-for="Unidade" type="text" class="form-control"
+                                        placeholder="Ex: Bloco A" />
+                                    <span asp-validation-for="Unidade" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="section-locatario" style="display: none;">
+                            <hr class="my-4" />
+                            <h5 class="mb-3">Dados do Contrato</h5>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-500">Valor Mensal (R$)</label>
+                                        <input asp-for="ValorMensal" type="number" step="0.01" class="form-control"
+                                            placeholder="0,00" />
+                                        <span asp-validation-for="ValorMensal" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-500">CPF</label>
+                                        <input asp-for="CPF" type="text" class="form-control"
+                                            placeholder="000.000.000-00" />
+                                        <span asp-validation-for="CPF" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-500">Data de Início</label>
+                                        <input asp-for="DataInicio" type="date" class="form-control" />
+                                        <span asp-validation-for="DataInicio" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-500">Data de Término</label>
+                                        <input asp-for="DataFim" type="date" class="form-control" />
+                                        <span asp-validation-for="DataFim" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-500">Telefone</label>
+                                        <input asp-for="Telefone" type="text" class="form-control"
+                                            placeholder="(11) 99999-9999" />
+                                        <span asp-validation-for="Telefone" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-500">Email</label>
+                                        <input asp-for="Email" type="email" class="form-control"
+                                            placeholder="email@example.com" />
+                                        <span asp-validation-for="Email" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="section-condomino" style="display: none;">
+                            <hr class="my-4" />
+                            <h5 class="mb-3">Dados do Condômino</h5>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-500">CPF</label>
+                                        <input asp-for="CPF" type="text" class="form-control"
+                                            placeholder="000.000.000-00" />
+                                        <span asp-validation-for="CPF" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-500">Tipo de Condômino</label>
+                                        <select asp-for="TipoCondomino" class="form-select">
+                                            <option value="">Selecione...</option>
+                                            <option value="Proprietário">Proprietário</option>
+                                            <option value="Locatário">Locatário</option>
+                                            <option value="Morador">Morador</option>
+                                        </select>
+                                        <span asp-validation-for="TipoCondomino" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-500">Telefone</label>
+                                        <input asp-for="Telefone" type="text" class="form-control"
+                                            placeholder="(11) 99999-9999" />
+                                        <span asp-validation-for="Telefone" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-500">Email</label>
+                                        <input asp-for="Email" type="email" class="form-control"
+                                            placeholder="email@example.com" />
+                                        <span asp-validation-for="Email" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="section-funcionario" style="display: none;">
+                            <hr class="my-4" />
+                            <h5 class="mb-3">Dados do Funcionário</h5>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-500">CPF</label>
+                                        <input asp-for="CPF" type="text" class="form-control"
+                                            placeholder="000.000.000-00" />
+                                        <span asp-validation-for="CPF" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-500">Cargo</label>
+                                        <input asp-for="Cargo" type="text" class="form-control"
+                                            placeholder="Ex: Zelador" />
+                                        <span asp-validation-for="Cargo" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-500">Turno</label>
+                                        <select asp-for="Turno" class="form-select">
+                                            <option value="">Selecione...</option>
+                                            <option value="Manhã">Manhã</option>
+                                            <option value="Tarde">Tarde</option>
+                                            <option value="Noite">Noite</option>
+                                            <option value="Integral">Integral</option>
+                                        </select>
+                                        <span asp-validation-for="Turno" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-500">Data de Admissão</label>
+                                        <input asp-for="DataAdmissao" type="date" class="form-control" />
+                                        <span asp-validation-for="DataAdmissao" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-500">Telefone</label>
+                                        <input asp-for="Telefone" type="text" class="form-control"
+                                            placeholder="(11) 99999-9999" />
+                                        <span asp-validation-for="Telefone" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-500">Email</label>
+                                        <input asp-for="Email" type="email" class="form-control"
+                                            placeholder="email@example.com" />
+                                        <span asp-validation-for="Email" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 contract-action-buttons">
+                            <a href="@Url.Action("Index", new { tab = "contracts" })"
+                                class="contract-btn contract-btn-cancel">
+                                Cancelar
+                            </a>
+                            <button type="submit" class="contract-btn contract-btn-submit">
+                                Cadastrar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelector('select[name="Type"]').addEventListener('change', function () {
+        document.getElementById('section-locatario').style.display = 'none';
+        document.getElementById('section-condomino').style.display = 'none';
+        document.getElementById('section-funcionario').style.display = 'none';
+
+        if (this.value === '1') {
+            document.getElementById('section-locatario').style.display = 'block';
+        } else if (this.value === '2') {
+            document.getElementById('section-condomino').style.display = 'block';
+        } else if (this.value === '3') {
+            document.getElementById('section-funcionario').style.display = 'block';
+        }
+    });
+</script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

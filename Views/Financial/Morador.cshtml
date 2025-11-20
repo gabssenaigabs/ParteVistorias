@@ -1,0 +1,129 @@
+@model CondoHub.Models.Entities.Payment
+@{
+    ViewData["Title"] = "Financeiro - Morador";
+    decimal valorBase = 1452.00m;
+    decimal fundoReserva = 200.00m;
+    decimal valorComDesconto = valorBase + fundoReserva;
+}
+
+<div style="display:flex; justify-content:center; padding:40px 20px;">
+    <div
+        style="width:100%; max-width:900px; border:3px solid #FFA500; border-radius:24px; background-color:#FFFBF7; padding:40px; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:30px;">
+            <div>
+                <p style="margin:0 0 5px 0; font-size:18px; font-weight:600; color:#2D3748;">@Model.MesReferencia</p>
+                <p style="margin:0; font-size:15px; font-weight:500; color:#FF6B35;">Vencimento:
+                    @Model.DataVencimento.ToString("dd/MM/yyyy")</p>
+            </div>
+            <div
+                style="background-color:#FFA500; color:#333; padding:6px 16px; border-radius:20px; font-size:13px; font-weight:600; display:flex; align-items:center; gap:5px;">
+                @if (Model.Status == CondoHub.Models.Entities.PaymentStatus.Pendente)
+                {
+                    <span>Pendente</span>
+                }
+                else if (Model.Status == CondoHub.Models.Entities.PaymentStatus.Atrasado)
+                {
+                    <span>Atrasado</span>
+                }
+                else
+                {
+                    <span>Pago</span>
+                }
+
+            </div>
+        </div>
+
+        <div style="background:#fff; border-radius:8px; padding:18px; margin-bottom:14px;">
+            <p style="margin:0 0 12px 0; font-size:14px; color:#2D3748; font-weight:600;">Descrição</p>
+            <p style="margin:0 0 16px 0; font-size:14px; color:#2D3748;">Condomínio + Fundo de Reserva</p>
+
+            <p style="margin:0 0 12px 0; font-size:14px; color:#2D3748; font-weight:600;">Composição do Valor</p>
+            <p style="margin:0 0 8px 0; font-size:14px; color:#2D3748;">• Taxa Condominial: R$ 1.452,00</p>
+            <p style="margin:0 0 8px 0; font-size:14px; color:#2D3748;">• Fundo de Reserva: R$ 200,00</p>
+
+            <hr style="border:none; border-top:1px solid #DDD; margin:12px 0;" />
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="color:#2D3748; font-weight:700;">Total a Pagar:</div>
+                <div style="color:#0052CC; font-weight:700; font-size:18px;">R$ @valorComDesconto.ToString("F2")</div>
+            </div>
+        </div>
+
+        @if (Model.Status != CondoHub.Models.Entities.PaymentStatus.Pago)
+        {
+            <button id="openPixBtn"
+                style="width:100%; padding:14px 20px; background-color:#0052CC; color:white; border:none; border-radius:8px; font-size:16px; font-weight:600; cursor:pointer; font-family:inherit;">
+                Gerar QR Code / PIX
+            </button>
+        }
+        else
+        {
+            <button disabled
+                style="width:100%; padding:14px 20px; background:#e9ecef; color:#6c757d; border:none; border-radius:8px; font-size:16px; font-weight:600; cursor:not-allowed;">
+                Pagamento efetuado
+            </button>
+        }
+    </div>
+</div>
+
+<div id="pixModal"
+    style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:2000; align-items:center; justify-content:center;">
+    <div
+        style="background:#fff; width:520px; max-width:calc(100% - 40px); border-radius:10px; padding:24px; box-shadow:0 12px 40px rgba(0,0,0,0.35); position:relative;">
+        <button id="pixClose"
+            style="position:absolute; right:12px; top:12px; background:transparent; border:none; font-size:20px; cursor:pointer;">✕</button>
+        <h5 style="margin:0 0 6px 0; font-size:18px;">Pagamento - @Model.MesReferencia</h5>
+        <div style="color:#6c757d; font-size:0.95rem; margin-bottom:14px;">Valor: R$ @valorComDesconto.ToString("F2")
+        </div>
+
+        <div
+            style="border-radius:10px; background:#fff; padding:20px; border:1px solid #EEF2F6; margin-bottom:12px; text-align:center;">
+            @if (!string.IsNullOrEmpty(Model.QrCodePix))
+            {
+                <img src="@Model.QrCodePix" alt="QR Code PIX"
+                    style="max-width:160px; max-height:160px; display:block; margin:0 auto;" />
+            }
+        </div>
+
+        <label style="font-size:0.9rem; color:#6c757d; display:block; margin-bottom:6px;">Chave PIX Copia e Cola</label>
+        <div style="position:relative; display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+            <input id="pixKeyInput" class="form-control"
+                style="flex:1; padding:10px 44px 10px 12px; border-radius:8px; border:1px solid #E0E0E0; background:#fff; color:#6c757d; font-weight:500;"
+                value="@Model.QrCodePix" readonly />
+            <button id="copyPixBtn"
+                style="position:absolute; right:6px; background:#F5F5F5; border:1px solid #D0D0D0; padding:8px 10px; border-radius:6px; cursor:pointer;">📋</button>
+        </div>
+
+        <form id="comprovanteForm" method="post" enctype="multipart/form-data" asp-action="UploadComprovante"
+            asp-controller="Financial">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <div style="display:flex; gap:8px; align-items:center;">
+                <label
+                    style="flex:1; padding:10px 12px; border-radius:8px; border:1px solid #E0E0E0; background:#F9F9F9; cursor:pointer; color:#6c757d; font-size:0.9rem; display:flex; align-items:center; justify-content:center;">
+                    <input id="comprovanteFile" type="file" name="comprovante" accept=".jpg,.png,.pdf"
+                        style="display:none;" />
+                    Escolher arquivo
+                </label>
+                <button type="submit"
+                    style="background:#0052CC; color:#fff; border:none; padding:10px 12px; border-radius:8px; font-weight:600; cursor:pointer; height:44px;">Enviar</button>
+            </div>
+            <div id="uploadMsg" style="margin-top:10px; font-size:0.9rem; color:#6c757d;"></div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('openPixBtn').addEventListener('click', function () {
+        document.getElementById('pixModal').style.display = 'flex';
+    });
+    document.getElementById('pixClose').addEventListener('click', function () {
+        document.getElementById('pixModal').style.display = 'none';
+    });
+    document.getElementById('copyPixBtn').addEventListener('click', function () {
+        const pixInput = document.getElementById('pixKeyInput');
+        pixInput.select();
+        pixInput.setSelectionRange(0, 99999);
+        document.execCommand('copy');
+        alert('Chave PIX copiada!');
+    });
+</script>

@@ -1,0 +1,538 @@
+@using CondoHub.Models.Entities
+@model Notice
+@{
+    ViewData["Title"] = "Editar Checklist";
+    var isReadOnly = ViewBag.IsReadOnly ?? false;
+}
+
+@if (User?.Identity != null && User.Identity.IsAuthenticated)
+{
+    <partial name="_Sidebar" />
+}
+
+<link rel="stylesheet" href="~/css/imoveis.css" />
+
+<style>
+    .finance-header {
+        position: fixed;
+        top: 0;
+        left: 250px;
+        height: 120px;
+        width: calc(100% - 250px);
+        background: linear-gradient(90deg, #9b59b6 0%, #6a1b9a 100%);
+        background-size: cover;
+        padding: 25px 0 25px 20px;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        box-shadow: inset 0 -20px 40px rgba(0, 0, 0, 0.06);
+    }
+
+    .main-content {
+        margin-left: 250px;
+        margin-top: 120px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .status-btn {
+        border: 2px solid #ccc !important;
+        transition: all 0.2s ease !important;
+        font-weight: 600 !important;
+    }
+
+    .status-btn:hover {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .status-btn:focus,
+    .status-btn:active {
+        box-shadow: none !important;
+    }
+
+    .status-btn:focus-visible {
+        outline: none !important;
+    }
+
+    .status-btn.selected-status {
+        font-weight: 700 !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+    }
+</style>
+
+<div class="finance-header">
+    <div class="d-flex justify-content-between align-items-center w-100" style="height: 100%;">
+        <div class="d-flex align-items-center gap-3">
+            <i class="bi bi-clipboard-check" style="font-size: 36px; color: white;"></i>
+            <div>
+                <h1 class="mb-0 text-white fw-bold" style="font-size: 32px; line-height: 1;">Checklist - Apto
+                    @(Model.Solicitante?.Email ?? "N/A")</h1>
+                <p class="mb-0 text-white" style="font-size: 14px; opacity: 0.9;">Vistoria de entrada</p>
+            </div>
+        </div>
+        <a href="@Url.Action("Index", new { tab = "checklist" })" class="btn btn-light" style="margin-right: 20px;">
+            <i class="bi bi-arrow-left"></i> Voltar
+        </a>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="container-fluid py-4">
+        <div style="max-width: 920px; margin: 0 auto; padding: 0 12px;">
+            <input type="hidden" id="noticeIdField" value="@Model.Id" />
+
+            <h6 style="font-size:14px; color:#333; margin:18px 0 12px 0;">Sala</h6>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+                @foreach (var item in Model.Itens.Where(i => i.Categoria == "Sala"))
+                {
+                    <div style="background:#fafafa; border-radius:8px; padding:16px; display:flex; flex-direction:column; gap:12px;"
+                        data-item-id="@item.Id">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div style="font-weight:600; color:#14284B;">@item.Descricao</div>
+                            <div style="display:flex; gap:8px;">
+                                <button class="btn btn-sm btn-outline-secondary status-btn" data-status="ok"
+                                    data-original-text="OK" style="cursor:@(isReadOnly ? "default" : "pointer");"
+                                    @(isReadOnly ? "disabled" : "")>OK</button>
+                                <button class="btn btn-sm btn-outline-secondary status-btn" data-status="atencao"
+                                    data-original-text="Aten��o"
+                                    style="cursor:@(isReadOnly ? "default" : "pointer");">Atenção</button>
+                                <button class="btn btn-sm btn-outline-secondary status-btn" data-status="critico"
+                                    data-original-text="Cr�tico"
+                                    style="cursor:@(isReadOnly ? "default" : "pointer");">Crítico</button>
+                            </div>
+                        </div>
+                        <div class="status-info"
+                            style="display:none; width:100%; padding-top:12px; border-top:1px solid #e0e0e0;">
+                            <textarea placeholder="Observações..."
+                            style="width:100%; border:1px solid #ddd; border-radius:6px; padding:8px; font-size:13px; min-height:60px; resize:vertical;"></textarea>
+                            <div class="add-photo-btn"
+                                style="margin-top:8px; display:flex; align-items:center; gap:8px; cursor:pointer;">
+                                <i class="bi bi-image" style="font-size:16px; color:#666;"></i>
+                                <span style="font-size:13px; color:#666;">Adicionar foto</span>
+                                <input type="file" accept="image/*" class="file-input" style="display:none;" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <h6 style="font-size:14px; color:#333; margin:18px 0 12px 0;">Cozinha</h6>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+                @foreach (var item in Model.Itens.Where(i => i.Categoria == "Cozinha"))
+                {
+                    <div style="background:#fafafa; border-radius:8px; padding:16px; display:flex; flex-direction:column; gap:12px;"
+                        data-item-id="@item.Id">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div style="font-weight:600; color:#14284B;">@item.Descricao</div>
+                            <div style="display:flex; gap:8px;">
+                                <button class="btn btn-sm btn-outline-secondary status-btn" data-status="ok"
+                                    data-original-text="OK" style="cursor:@(isReadOnly ? "default" : "pointer");"
+                                    @(isReadOnly ? "disabled" : "")>OK</button>
+                                <button class="btn btn-sm btn-outline-secondary status-btn" data-status="atencao"
+                                    data-original-text="Aten��o"
+                                    style="cursor:@(isReadOnly ? "default" : "pointer");">Atenção</button>
+                                <button class="btn btn-sm btn-outline-secondary status-btn" data-status="critico"
+                                    data-original-text="Cr�tico"
+                                    style="cursor:@(isReadOnly ? "default" : "pointer");">Crítico</button>
+                            </div>
+                        </div>
+                        <div class="status-info"
+                            style="display:none; width:100%; padding-top:12px; border-top:1px solid #e0e0e0;">
+                            <textarea placeholder="Observações..."
+                            style="width:100%; border:1px solid #ddd; border-radius:6px; padding:8px; font-size:13px; min-height:60px; resize:vertical;"></textarea>
+                            <div class="add-photo-btn"
+                                style="margin-top:8px; display:flex; align-items:center; gap:8px; cursor:pointer;">
+                                <i class="bi bi-image" style="font-size:16px; color:#666;"></i>
+                                <span style="font-size:13px; color:#666;">Adicionar foto</span>
+                                <input type="file" accept="image/*" class="file-input" style="display:none;" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <h6 style="font-size:14px; color:#333; margin:18px 0 12px 0;">Banheiro</h6>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+                @foreach (var item in Model.Itens.Where(i => i.Categoria == "Banheiro"))
+                {
+                    <div style="background:#fafafa; border-radius:8px; padding:16px; display:flex; flex-direction:column; gap:12px;"
+                        data-item-id="@item.Id">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div style="font-weight:600; color:#14284B;">@item.Descricao</div>
+                            <div style="display:flex; gap:8px;">
+                                <button class="btn btn-sm btn-outline-secondary status-btn" data-status="ok"
+                                    data-original-text="OK" style="cursor:@(isReadOnly ? "default" : "pointer");"
+                                    @(isReadOnly ? "disabled" : "")>OK</button>
+                                <button class="btn btn-sm btn-outline-secondary status-btn" data-status="atencao"
+                                    data-original-text="Aten��o"
+                                    style="cursor:@(isReadOnly ? "default" : "pointer");">Atenção</button>
+                                <button class="btn btn-sm btn-outline-secondary status-btn" data-status="critico"
+                                    data-original-text="Cr�tico"
+                                    style="cursor:@(isReadOnly ? "default" : "pointer");">Crítico</button>
+                            </div>
+                        </div>
+                        <div class="status-info"
+                            style="display:none; width:100%; padding-top:12px; border-top:1px solid #e0e0e0;">
+                            <textarea placeholder="Observações..."
+                            style="width:100%; border:1px solid #ddd; border-radius:6px; padding:8px; font-size:13px; min-height:60px; resize:vertical;"></textarea>
+                            <div class="add-photo-btn"
+                                style="margin-top:8px; display:flex; align-items:center; gap:8px; cursor:pointer;">
+                                <i class="bi bi-image" style="font-size:16px; color:#666;"></i>
+                                <span style="font-size:13px; color:#666;">Adicionar foto</span>
+                                <input type="file" accept="image/*" class="file-input" style="display:none;" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <h6 style="font-size:14px; color:#333; margin:18px 0 12px 0;">Quartos</h6>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+                @foreach (var item in Model.Itens.Where(i => i.Categoria == "Quartos"))
+                {
+                    <div style="background:#fafafa; border-radius:8px; padding:16px; display:flex; flex-direction:column; gap:12px;"
+                        data-item-id="@item.Id">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div style="font-weight:600; color:#14284B;">@item.Descricao</div>
+                            <div style="display:flex; gap:8px;">
+                                <button class="btn btn-sm btn-outline-secondary status-btn" data-status="ok"
+                                    data-original-text="OK" style="cursor:@(isReadOnly ? "default" : "pointer");"
+                                    @(isReadOnly ? "disabled" : "")>OK</button>
+                                <button class="btn btn-sm btn-outline-secondary status-btn" data-status="atencao"
+                                    data-original-text="Aten��o"
+                                    style="cursor:@(isReadOnly ? "default" : "pointer");">Atenção</button>
+                                <button class="btn btn-sm btn-outline-secondary status-btn" data-status="critico"
+                                    data-original-text="Cr�tico"
+                                    style="cursor:@(isReadOnly ? "default" : "pointer");">Crítico</button>
+                            </div>
+                        </div>
+                        <div class="status-info"
+                            style="display:none; width:100%; padding-top:12px; border-top:1px solid #e0e0e0;">
+                            <textarea placeholder="Observações..."
+                            style="width:100%; border:1px solid #ddd; border-radius:6px; padding:8px; font-size:13px; min-height:60px; resize:vertical;"></textarea>
+                            <div class="add-photo-btn"
+                                style="margin-top:8px; display:flex; align-items:center; gap:8px; cursor:pointer;">
+                                <i class="bi bi-image" style="font-size:16px; color:#666;"></i>
+                                <span style="font-size:13px; color:#666;">Adicionar foto</span>
+                                <input type="file" accept="image/*" class="file-input" style="display:none;" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <h6 style="font-size:14px; color:#333; margin:18px 0 12px 0;">Área de Serviço</h6>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+                @foreach (var item in Model.Itens.Where(i => i.Categoria == "Área de Serviço"))
+                {
+                    <div style="background:#fafafa; border-radius:8px; padding:16px; display:flex; flex-direction:column; gap:12px;"
+                        data-item-id="@item.Id">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div style="font-weight:600; color:#14284B;">@item.Descricao</div>
+                            <div style="display:flex; gap:8px;">
+                                <button class="btn btn-sm btn-outline-secondary status-btn" data-status="ok"
+                                    data-original-text="OK" style="cursor:@(isReadOnly ? "default" : "pointer");"
+                                    @(isReadOnly ? "disabled" : "")>OK</button>
+                                <button class="btn btn-sm btn-outline-secondary status-btn" data-status="atencao"
+                                    data-original-text="Aten��o"
+                                    style="cursor:@(isReadOnly ? "default" : "pointer");">Atenção</button>
+                                <button class="btn btn-sm btn-outline-secondary status-btn" data-status="critico"
+                                    data-original-text="Cr�tico"
+                                    style="cursor:@(isReadOnly ? "default" : "pointer");">Crítico</button>
+                            </div>
+                        </div>
+                        <div class="status-info"
+                            style="display:none; width:100%; padding-top:12px; border-top:1px solid #e0e0e0;">
+                            <textarea placeholder="Observações..."
+                            style="width:100%; border:1px solid #ddd; border-radius:6px; padding:8px; font-size:13px; min-height:60px; resize:vertical;"></textarea>
+                            <div class="add-photo-btn"
+                                style="margin-top:8px; display:flex; align-items:center; gap:8px; cursor:pointer;">
+                                <i class="bi bi-image" style="font-size:16px; color:#666;"></i>
+                                <span style="font-size:13px; color:#666;">Adicionar foto</span>
+                                <input type="file" accept="image/*" class="file-input" style="display:none;" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <h6 style="font-size:14px; color:#333; margin:18px 0 12px 0;">Geral</h6>
+            <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:8px;">
+                @foreach (var item in Model.Itens.Where(i => i.Categoria == "Geral"))
+                {
+                    <div style="background:#fafafa; border-radius:8px; padding:16px; display:flex; flex-direction:column; gap:12px;"
+                        data-item-id="@item.Id">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div style="font-weight:600; color:#14284B;">@item.Descricao</div>
+                            <div style="display:flex; gap:8px;">
+                                <button class="btn btn-sm btn-outline-secondary status-btn" data-status="ok"
+                                    data-original-text="OK" style="cursor:@(isReadOnly ? "default" : "pointer");"
+                                    @(isReadOnly ? "disabled" : "")>OK</button>
+                                <button class="btn btn-sm btn-outline-secondary status-btn" data-status="atencao"
+                                    data-original-text="Aten��o"
+                                    style="cursor:@(isReadOnly ? "default" : "pointer");">Atenção</button>
+                                <button class="btn btn-sm btn-outline-secondary status-btn" data-status="critico"
+                                    data-original-text="Cr�tico"
+                                    style="cursor:@(isReadOnly ? "default" : "pointer");">Crítico</button>
+                            </div>
+                        </div>
+                        <div class="status-info"
+                            style="display:none; width:100%; padding-top:12px; border-top:1px solid #e0e0e0;">
+                            <textarea placeholder="Observações..."
+                            style="width:100%; border:1px solid #ddd; border-radius:6px; padding:8px; font-size:13px; min-height:60px; resize:vertical;"></textarea>
+                            <div class="add-photo-btn"
+                                style="margin-top:8px; display:flex; align-items:center; gap:8px; cursor:pointer;">
+                                <i class="bi bi-image" style="font-size:16px; color:#666;"></i>
+                                <span style="font-size:13px; color:#666;">Adicionar foto</span>
+                                <input type="file" accept="image/*" class="file-input" style="display:none;" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div style="display:flex; gap:12px; margin-top:18px;">
+                @if (!isReadOnly)
+                {
+                    <button id="gerarLaudoBtn" class="btn"
+                        style="background:#9b59b6; color:white; padding:10px 18px; border-radius:8px; flex:1; text-align:center; cursor:pointer; border:none;">Gerar
+                        Laudo</button>
+                }
+                else
+                {
+                    <a href="@Url.Action("Index", new { tab = "historico" })" class="btn btn-light"
+                        style="flex:1; border-radius:8px;">
+                        <i class="bi bi-arrow-left"></i> Voltar
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const colorMap = {
+            'ok': { bg: '#22c55e', text: 'white', icon: '✓' },
+            'atencao': { bg: '#f97316', text: 'white', icon: '⚠' },
+            'critico': { bg: '#ef4444', text: 'white', icon: '✕' }
+        };
+
+        function applyButtonColor(btn, status) {
+            if (!status || !colorMap[status]) {
+                btn.style.background = '';
+                btn.style.color = '';
+                btn.style.borderColor = '';
+                btn.style.boxShadow = '';
+                btn.textContent = btn.getAttribute('data-original-text');
+                btn.classList.remove('selected-status');
+                return;
+            }
+            const colors = colorMap[status];
+            btn.style.background = colors.bg + ' !important';
+            btn.style.color = colors.text + ' !important';
+            btn.style.borderColor = colors.bg + ' !important';
+            btn.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3) !important';
+            btn.textContent = colors.icon + ' ' + btn.getAttribute('data-original-text');
+            btn.classList.add('selected-status');
+        }
+
+        function restoreItemColors(item) {
+            const stored = item.getAttribute('data-selected-status');
+            if (stored) {
+                const btn = item.querySelector(`.status-btn[data-status="${stored}"]`);
+                if (btn) applyButtonColor(btn, stored);
+            }
+        }
+
+        document.querySelectorAll('[style*="background:#fafafa"]').forEach(item => {
+            restoreItemColors(item);
+        });
+
+        document.body.addEventListener('click', function (e) {
+            const btn = e.target.closest('.status-btn');
+            if (btn) {
+                e.preventDefault();
+                const item = btn.closest('[style*="background:#fafafa"]') || btn.closest('.status-item') || btn.parentElement;
+                const allButtons = item.querySelectorAll('.status-btn');
+                const statusInfo = item.querySelector('.status-info');
+                const status = btn.dataset.status;
+
+                allButtons.forEach(b => { applyButtonColor(b, null); });
+                applyButtonColor(btn, status);
+                item.setAttribute('data-selected-status', status);
+
+                if (statusInfo) statusInfo.style.display = 'block';
+            }
+
+            const add = e.target.closest('.add-photo-btn');
+            if (add) {
+                const container = add.closest('.status-info');
+                const input = container ? container.querySelector('.file-input') : null;
+                if (input) input.click();
+            }
+        });
+
+        document.body.addEventListener('change', function (e) {
+            const input = e.target;
+            if (!input.classList || !input.classList.contains('file-input')) return;
+            const file = input.files && input.files[0];
+            const statusInfo = input.closest('.status-info');
+            if (!file || !statusInfo) return;
+
+            let fileDisplay = statusInfo.querySelector('.file-display');
+            if (!fileDisplay) {
+                fileDisplay = document.createElement('div');
+                fileDisplay.className = 'file-display';
+                statusInfo.appendChild(fileDisplay);
+            }
+
+            fileDisplay.innerHTML = '<div style="margin-top:8px; padding:12px; background:#e8f5e9; border-radius:6px; border:1px solid #81c784; display:flex; align-items:center; justify-content:space-between; gap:12px;">'
+                + '<span style="font-size:13px; color:#2e7d32; display:flex; align-items:center; gap:6px;"><i class="bi bi-file-earmark-image" style="font-size:16px;"></i>' + (file.name || 'Arquivo selecionado') + '</span>'
+                + '<button type="button" class="send-photo-btn" style="background:#10b981; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; font-size:12px; font-weight:600;">Enviar</button>'
+                + '</div>';
+
+            const sendBtn = fileDisplay.querySelector('.send-photo-btn');
+            sendBtn.addEventListener('click', function () {
+                fileDisplay.innerHTML = '<div style="margin-top:8px; padding:8px; background:#f0f0f0; border-radius:6px; font-size:13px; display:flex; justify-content:space-between; align-items:center;">'
+                    + '<span><i class="bi bi-hourglass-split" style="margin-right:6px;"></i>Enviando...</span>'
+                    + '</div>';
+
+                const formData = new FormData();
+                formData.append('file', file);
+
+                fetch('/Notice/UploadPhoto', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            fileDisplay.innerHTML = '<div style="margin-top:8px; padding:8px; background:#f0f0f0; border-radius:6px; font-size:13px; display:flex; justify-content:space-between; align-items:center;">'
+                                + '<span><i class="bi bi-check-circle" style="margin-right:6px; color:#10b981; font-size:16px;"></i><span style="color:#10b981; font-weight:600;">Foto enviada com sucesso!</span></span>'
+                                + '<button type="button" class="remove-file" style="background:none; border:none; color:#ef4444; cursor:pointer; font-weight:bold; font-size:18px;">&times;</button>'
+                                + '</div>';
+
+                            input.setAttribute('data-uploaded-path', data.filePath);
+
+                            const removeBtn = fileDisplay.querySelector('.remove-file');
+                            removeBtn.addEventListener('click', function () {
+                                input.value = '';
+                                input.removeAttribute('data-uploaded-path');
+                                fileDisplay.remove();
+                            });
+                        } else {
+                            fileDisplay.innerHTML = '<div style="margin-top:8px; padding:8px; background:#ffebee; border-radius:6px; font-size:13px; color:#c62828; display:flex; justify-content:space-between; align-items:center;">'
+                                + '<span><i class="bi bi-exclamation-circle" style="margin-right:6px;"></i>' + (data.message || 'Erro ao enviar foto') + '</span>'
+                                + '<button type="button" class="remove-file" style="background:none; border:none; color:#ef4444; cursor:pointer; font-weight:bold;">&times;</button>'
+                                + '</div>';
+
+                            const removeBtn = fileDisplay.querySelector('.remove-file');
+                            removeBtn.addEventListener('click', function () {
+                                input.value = '';
+                                fileDisplay.remove();
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Upload error:', err);
+                        fileDisplay.innerHTML = '<div style="margin-top:8px; padding:8px; background:#ffebee; border-radius:6px; font-size:13px; color:#c62828; display:flex; justify-content:space-between; align-items:center;">'
+                            + '<span><i class="bi bi-exclamation-circle" style="margin-right:6px;"></i>Erro ao conectar ao servidor</span>'
+                            + '<button type="button" class="remove-file" style="background:none; border:none; color:#ef4444; cursor:pointer; font-weight:bold;">&times;</button>'
+                            + '</div>';
+
+                        const removeBtn = fileDisplay.querySelector('.remove-file');
+                        removeBtn.addEventListener('click', function () {
+                            input.value = '';
+                            fileDisplay.remove();
+                        });
+                    });
+            });
+        });
+
+        function collectChecklistData() {
+            const items = document.querySelectorAll('[style*="background:#fafafa"]');
+            const checklistData = [];
+            let allValid = true;
+            let invalidItems = [];
+
+            items.forEach((item, index) => {
+                const itemId = item.getAttribute('data-item-id');
+                const selectedStatus = item.getAttribute('data-selected-status');
+                const descricao = item.querySelector('[style*="color:#14284B;"]')?.textContent || `Item ${index + 1}`;
+
+                if (!selectedStatus) {
+                    allValid = false;
+                    invalidItems.push(descricao);
+                }
+
+                checklistData.push({
+                    id: parseInt(itemId),
+                    status: selectedStatus || 'NA'
+                });
+            });
+
+            return { allValid, invalidItems, checklistData };
+        }
+
+        const gerarLaudoBtn = document.getElementById('gerarLaudoBtn');
+        if (gerarLaudoBtn) {
+            gerarLaudoBtn.addEventListener('click', function () {
+                const validation = collectChecklistData();
+
+                if (!validation.allValid) {
+                    alert('Por favor, selecione um status (OK, Atenção ou Crítico) para todos os itens:\\n\\n' + validation.invalidItems.join('\\n'));
+                    return;
+                }
+
+                const noticeIdField = document.getElementById('noticeIdField');
+                const noticeId = noticeIdField?.value;
+
+                if (!noticeId) {
+                    alert('Erro: ID da vistoria não encontrado');
+                    return;
+                }
+
+                gerarLaudoBtn.disabled = true;
+                gerarLaudoBtn.textContent = 'Finalizando...';
+
+                fetch(`/Notice/SalvarChecklist/${noticeId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(validation.checklistData)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            return fetch(`/Notice/ConcluirVistoria/${noticeId}`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            });
+                        } else {
+                            throw new Error(data.message || 'Erro ao salvar checklist');
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.href = '@Url.Action("Index", new { tab = "historico" })';
+                        } else {
+                            alert('Erro: ' + (data.message || 'Não foi possível concluir a vistoria'));
+                            gerarLaudoBtn.disabled = false;
+                            gerarLaudoBtn.textContent = 'Gerar Laudo';
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Erro ao concluir vistoria:', err);
+                        alert('Erro: ' + err.message);
+                        gerarLaudoBtn.disabled = false;
+                        gerarLaudoBtn.textContent = 'Gerar Laudo';
+                    });
+            });
+        }
+    });
+</script>
